@@ -99,10 +99,33 @@ Los commits no llevan firma ni co-autoria de herramientas.
 - Sprints = Milestones
 - Cada issue lleva criterios de aceptacion (Given/When/Then) y checklist de Definition of Done
 
-## 6. Convenciones de codigo
+## 6. Modelo de dominio en el frontend
+
+La app arranca con **autos y motos** y el esquema crece despues a otras clases de vehiculo. Lo que
+eso implica en la interfaz:
+
+- Los tipos TypeScript son espejo del API: `vehicleType` (`'car' | 'motorcycle'`), `usageValue`,
+  `usageUnit` (`'km' | 'hours'`). **No** existe un campo `kilometraje` en el modelo de datos.
+- La etiqueta del campo de uso se deriva de `usageUnit`, no se hardcodea: hoy siempre muestra
+  "Kilometraje (km)", pero el dia que entre otra clase de vehiculo solo cambia el dato.
+- Las listas de piezas vienen del API (`part_types`), nunca hardcodeadas en el frontend.
+- **El VIN es opcional en el formulario.** NHTSA no tiene las motos que se venden en Colombia (AKT,
+  Bajaj, TVS, Auteco, Victory), asi que el registro manual es el camino principal y el decode de VIN
+  es un autocompletado que prellena campos editables. Que NHTSA no reconozca un VIN **no es un
+  error**: se muestra un mensaje neutro y el formulario sigue usable.
+- Lo mismo con los recalls: lista vacia se comunica explicitamente ("no hay recalls registrados para
+  este vehiculo"), no como un vacio ambiguo ni como falla.
+
+## 7. Convenciones de codigo
 
 - Componentes standalone; nada de NgModules nuevos.
 - Estado con signals (`signal`, `computed`), no con `BehaviorSubject` salvo que haga falta.
 - Las llamadas HTTP van en servicios de `src/app/core/`, nunca dentro de un componente.
 - Los servicios se testean con `HttpTestingController`, sin pegarle al API real.
-- Nombres de archivos en kebab-case, siguiendo el estilo del Angular CLI 20.
+- Nombres de archivos en kebab-case. Los componentes siguen el estilo del Angular CLI 20 sin
+  sufijo (`vehicle-form.ts` -> clase `VehicleForm`); los servicios y modelos si llevan sufijo
+  explicito (`vehicle.service.ts`, `vehicle.model.ts`) para que el servicio no choque de nombre
+  con el tipo `Vehicle`.
+- Las vistas tienen cuatro estados y se prueban los cuatro: cargando, vacio, error y con datos.
+- Codigo en ingles, textos visibles en espanol. El usuario ve "Vehiculo" y "Kilometraje"; el codigo
+  dice `vehicle` y `usageValue`.

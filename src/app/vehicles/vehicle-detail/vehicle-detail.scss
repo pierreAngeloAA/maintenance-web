@@ -1,0 +1,50 @@
+.vehicle-detail {
+  display: grid;
+  gap: 1rem;
+  max-width: 44rem;
+
+  &__data {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.25rem 1rem;
+
+    dt {
+      font-weight: 600;
+    }
+
+    dd {
+      margin: 0;
+    }
+  }
+
+  &__parts,
+  &__recalls {
+    display: grid;
+    gap: 0.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__part {
+    padding: 0.4rem 0.6rem;
+    background: #f4f4f6;
+    border-radius: 0.3rem;
+  }
+
+  &__recall {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+
+    &--urgent {
+      border-color: #b3261e;
+      background: #fdecea;
+    }
+  }
+
+  &__alert {
+    margin: 0 0 0.5rem;
+    font-weight: 700;
+    color: #8a1c12;
+  }
+}
