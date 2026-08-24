@@ -72,10 +72,16 @@ describe('VehicleDetail', () => {
     httpMock.expectOne(`${baseUrl}/vehicles/7/recalls`).flush({ vehicleId: 7, recalls });
   }
 
+  /** El tablero de riesgo es un hijo del detalle y hace su propia peticion. */
+  function flushRisks() {
+    httpMock.expectOne(`${baseUrl}/vehicles/7/risks`).flush({ vehicleId: 7, risks: [] });
+  }
+
   it('muestra los datos del vehiculo', () => {
     flushVehicle();
     flushRecalls([]);
     fixture.detectChanges();
+    flushRisks();
 
     expect(fixture.nativeElement.textContent).toContain('AKT');
     expect(fixture.nativeElement.textContent).toContain('NKD 125');
@@ -86,6 +92,7 @@ describe('VehicleDetail', () => {
     flushVehicle();
     flushRecalls([]);
     fixture.detectChanges();
+    flushRisks();
 
     const parts = fixture.nativeElement.querySelectorAll('.vehicle-detail__part');
     expect(parts.length).toBe(2);
@@ -96,6 +103,7 @@ describe('VehicleDetail', () => {
     flushVehicle();
     flushRecalls([recall]);
     fixture.detectChanges();
+    flushRisks();
 
     expect(fixture.nativeElement.querySelectorAll('.vehicle-detail__recall').length).toBe(1);
     expect(fixture.nativeElement.textContent).toContain('ELECTRICAL SYSTEM');
@@ -105,6 +113,7 @@ describe('VehicleDetail', () => {
     flushVehicle();
     flushRecalls([{ ...recall, parkIt: true }]);
     fixture.detectChanges();
+    flushRisks();
 
     expect(fixture.nativeElement.querySelector('.vehicle-detail__recall--urgent')).not.toBeNull();
     expect(fixture.nativeElement.textContent).toContain('No manejes');
@@ -114,6 +123,7 @@ describe('VehicleDetail', () => {
     flushVehicle();
     flushRecalls([]);
     fixture.detectChanges();
+    flushRisks();
 
     const text = fixture.nativeElement.textContent;
     expect(text).toContain('NHTSA no reporta recalls');
@@ -133,6 +143,7 @@ describe('VehicleDetail', () => {
     flushVehicle();
     httpMock.expectOne(`${baseUrl}/vehicles/7/recalls`).flush('', { status: 500, statusText: 'Server Error' });
     fixture.detectChanges();
+    flushRisks();
 
     expect(fixture.nativeElement.textContent).toContain('AKT');
     expect(fixture.nativeElement.textContent).toContain('No pudimos consultar los recalls');

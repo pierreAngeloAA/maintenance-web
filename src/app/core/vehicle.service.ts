@@ -3,7 +3,15 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, map, of } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { Recall, RecallsResponse, Vehicle, VehicleInput, VinLookup } from './vehicle.model';
+import {
+  PartRisk,
+  Recall,
+  RecallsResponse,
+  RisksResponse,
+  Vehicle,
+  VehicleInput,
+  VinLookup,
+} from './vehicle.model';
 
 @Injectable({ providedIn: 'root' })
 export class VehicleService {
@@ -20,6 +28,13 @@ export class VehicleService {
 
   create(input: VehicleInput): Observable<Vehicle> {
     return this.http.post<Vehicle>(`${this.baseUrl}/vehicles`, { vehicle: input });
+  }
+
+  /** Riesgo de falla por pieza, ya ordenado de mayor a menor por el API. */
+  risks(vehicleId: number): Observable<PartRisk[]> {
+    return this.http
+      .get<RisksResponse>(`${this.baseUrl}/vehicles/${vehicleId}/risks`)
+      .pipe(map((response) => response.risks));
   }
 
   /**
