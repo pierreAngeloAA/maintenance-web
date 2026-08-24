@@ -1,59 +1,49 @@
-# MaintenanceWeb
+# maintenance-web
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.30.
+Frontend en Angular de **Maintenance**: app de mantenimiento predictivo vehicular.
 
-## Development server
+En vez de usar tablas genericas de intervalos de servicio ("cambia el aceite cada 5.000 km"), la app
+modela la probabilidad de falla de cada pieza como una **curva de riesgo** que crece con el uso y se
+ajusta por el contexto real del vehiculo: clima de la ciudad, terreno, estilo de manejo y marca de
+los repuestos instalados.
 
-To start a local development server, run:
+El backend Rails esta en el repo [`maintenance-api`](../maintenance-api).
 
-```bash
-ng serve
-```
+## Stack
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Angular 20 (standalone components + signals)
+- SCSS
+- Jasmine + Karma
+- ESLint + Prettier
+- Despliegue en Render (sitio estatico)
 
-## Code scaffolding
+## Setup
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+Requisitos: Node 22, npm 10.
 
 ```bash
-ng build
+git clone git@github.com:pierreAngeloAA/maintenance-web.git
+cd maintenance-web
+npm install
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+La app queda en `http://localhost:4200` y espera el API en `http://localhost:3000`.
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Tests
 
 ```bash
-ng test
+npm test              # watch
+npm run test:ci       # headless, una corrida
+npm run test:coverage # headless + cobertura (minimo 80%)
+npm run lint
 ```
 
-## Running end-to-end tests
+## Como se trabaja
 
-For end-to-end (e2e) testing, run:
+TDD estricto (spec primero), una rama por issue, Conventional Commits y `main` protegida.
+El detalle esta en [`CLAUDE.md`](CLAUDE.md).
 
-```bash
-ng e2e
-```
+## Licencia
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+MIT

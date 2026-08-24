@@ -1,0 +1,13 @@
+# Blueprint de Render para maintenance-web (sitio estatico).
+services:
+  - type: web
+    name: maintenance-web
+    runtime: static
+    branch: main
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist/maintenance-web/browser
+    routes:
+      # Angular es una SPA: todas las rutas se resuelven contra index.html.
+      - type: rewrite
+        source: /*
+        destination: /index.html

@@ -1,0 +1,17 @@
+.app-header {
+  padding: 2rem 1.5rem 1rem;
+
+  h1 {
+    margin: 0;
+    font-size: 2rem;
+  }
+
+  &__tagline {
+    margin: 0.25rem 0 0;
+    color: #666;
+  }
+}
+
+.app-main {
+  padding: 0 1.5rem 2rem;
+}
