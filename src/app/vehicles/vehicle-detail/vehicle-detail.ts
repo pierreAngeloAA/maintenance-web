@@ -5,10 +5,11 @@ import { VehicleService } from '../../core/vehicle.service';
 import { Recall, Vehicle } from '../../core/vehicle.model';
 import { VEHICLE_TYPE_LABELS } from '../vehicle-type-labels';
 import { RiskDashboard } from '../risk-dashboard/risk-dashboard';
+import { MaintenanceHistory } from '../maintenance-history/maintenance-history';
 
 @Component({
   selector: 'app-vehicle-detail',
-  imports: [RouterLink, RiskDashboard],
+  imports: [RouterLink, RiskDashboard, MaintenanceHistory],
   templateUrl: './vehicle-detail.html',
   styleUrl: './vehicle-detail.scss',
 })

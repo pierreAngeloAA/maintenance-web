@@ -33,6 +33,8 @@
 
     <app-risk-dashboard [vehicleId]="vehicle.id" />
 
+    <app-maintenance-history [vehicleId]="vehicle.id" [usageUnit]="vehicle.usageUnit" />
+
     <h3>Piezas que lleva este vehiculo</h3>
     <ul class="vehicle-detail__parts">
       @for (partType of vehicle.partTypes ?? []; track partType.id) {

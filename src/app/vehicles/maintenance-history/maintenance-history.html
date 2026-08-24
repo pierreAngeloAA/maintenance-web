@@ -1,0 +1,33 @@
+<section class="maintenance-history">
+  <header class="maintenance-history__header">
+    <h3>Historial de mantenimientos</h3>
+    <a [routerLink]="['/vehicles', vehicleId(), 'maintenance', 'new']">Registrar uno</a>
+  </header>
+
+  @if (loading()) {
+    <p>Cargando el historial...</p>
+  } @else if (error()) {
+    <p>No pudimos cargar el historial en este momento.</p>
+  } @else if (!records().length) {
+    <p>
+      Todavia no has registrado mantenimientos. Cada uno que registres hace mas preciso el calculo
+      de riesgo, porque nos dice cuanto uso lleva de verdad cada pieza.
+    </p>
+  } @else {
+    <ul class="maintenance-history__rows">
+      @for (record of records(); track record.id) {
+        <li class="maintenance-history__row">
+          <strong>{{ record.partType.name }}</strong>
+          <span>{{ record.performedOn }}</span>
+          <span>{{ record.usageAtService }} {{ usageUnit() }}</span>
+          @if (record.partBrand) {
+            <span class="maintenance-history__brand">{{ record.partBrand }}</span>
+          }
+          @if (record.notes) {
+            <p class="maintenance-history__notes">{{ record.notes }}</p>
+          }
+        </li>
+      }
+    </ul>
+  }
+</section>
