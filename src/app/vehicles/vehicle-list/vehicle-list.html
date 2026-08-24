@@ -1,0 +1,33 @@
+<section class="vehicle-list">
+  <header class="vehicle-list__header">
+    <h2>Mis vehiculos</h2>
+    <a routerLink="/vehicles/new">Registrar vehiculo</a>
+  </header>
+
+  @if (loading()) {
+    <p>Cargando tus vehiculos...</p>
+  } @else if (error()) {
+    <div class="vehicle-list__error">
+      <p>No pudimos cargar tus vehiculos.</p>
+      <button type="button" (click)="reload()">Reintentar</button>
+    </div>
+  } @else if (!items().length) {
+    <p>Todavia no tienes vehiculos registrados.</p>
+  } @else {
+    <ul class="vehicle-list__items">
+      @for (vehicle of items(); track vehicle.id) {
+        <li class="vehicle-list__item">
+          <a [routerLink]="['/vehicles', vehicle.id]">
+            <strong>{{ vehicle.make }} {{ vehicle.model }}</strong>
+            <span>{{ vehicle.modelYear }}</span>
+          </a>
+          <span class="vehicle-list__type">{{ typeLabels[vehicle.vehicleType] }}</span>
+          <span>{{ vehicle.usageValue }} {{ vehicle.usageUnit }}</span>
+          @if (vehicle.plate) {
+            <span>{{ vehicle.plate }}</span>
+          }
+        </li>
+      }
+    </ul>
+  }
+</section>
