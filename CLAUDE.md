@@ -122,6 +122,10 @@ eso implica en la interfaz:
 - Estado con signals (`signal`, `computed`), no con `BehaviorSubject` salvo que haga falta.
 - Las llamadas HTTP van en servicios de `src/app/core/`, nunca dentro de un componente.
 - Los servicios se testean con `HttpTestingController`, sin pegarle al API real.
-- Nombres de archivos en kebab-case, siguiendo el estilo del Angular CLI 20.
+- Nombres de archivos en kebab-case. Los componentes siguen el estilo del Angular CLI 20 sin
+  sufijo (`vehicle-form.ts` -> clase `VehicleForm`); los servicios y modelos si llevan sufijo
+  explicito (`vehicle.service.ts`, `vehicle.model.ts`) para que el servicio no choque de nombre
+  con el tipo `Vehicle`.
+- Las vistas tienen cuatro estados y se prueban los cuatro: cargando, vacio, error y con datos.
 - Codigo en ingles, textos visibles en espanol. El usuario ve "Vehiculo" y "Kilometraje"; el codigo
   dice `vehicle` y `usageValue`.

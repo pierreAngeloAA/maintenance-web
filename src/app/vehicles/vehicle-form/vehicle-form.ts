@@ -35,7 +35,7 @@ export class VehicleForm {
       [Validators.required, Validators.min(1900), Validators.max(new Date().getFullYear() + 1)],
     ],
     // Opcional a proposito: NHTSA no cubre las motos que se venden en Colombia.
-    vin: ['', Validators.pattern(VIN_PATTERN)],
+    vin: this.fb.nonNullable.control('', Validators.pattern(VIN_PATTERN)),
     plate: [''],
     usageValue: [null as number | null, [Validators.required, Validators.min(0)]],
     city: [''],
@@ -46,7 +46,7 @@ export class VehicleForm {
    * el vehiculo, el usuario sigue llenando los datos a mano.
    */
   onVinBlur(): void {
-    const vin = (this.form.controls.vin.value ?? '').replace(/\s+/g, '').toUpperCase();
+    const vin = this.form.controls.vin.value.replace(/\s+/g, '').toUpperCase();
     this.form.controls.vin.setValue(vin);
 
     if (!VIN_PATTERN.test(vin)) {

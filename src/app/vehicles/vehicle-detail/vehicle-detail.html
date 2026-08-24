@@ -1,0 +1,78 @@
+<section class="vehicle-detail">
+  <a routerLink="/vehicles">Volver a mis vehiculos</a>
+
+  @if (loading()) {
+    <p>Cargando el vehiculo...</p>
+  } @else if (error()) {
+    <p>No pudimos cargar este vehiculo.</p>
+  } @else if (vehicle(); as vehicle) {
+    <h2>{{ vehicle.make }} {{ vehicle.model }} {{ vehicle.modelYear }}</h2>
+
+    <dl class="vehicle-detail__data">
+      <dt>Tipo</dt>
+      <dd>{{ typeLabels[vehicle.vehicleType] }}</dd>
+
+      <dt>Kilometraje</dt>
+      <dd>{{ vehicle.usageValue }} {{ vehicle.usageUnit }}</dd>
+
+      @if (vehicle.plate) {
+        <dt>Placa</dt>
+        <dd>{{ vehicle.plate }}</dd>
+      }
+
+      @if (vehicle.vin) {
+        <dt>VIN</dt>
+        <dd>{{ vehicle.vin }}</dd>
+      }
+
+      @if (vehicle.city) {
+        <dt>Ciudad</dt>
+        <dd>{{ vehicle.city }}</dd>
+      }
+    </dl>
+
+    <h3>Piezas que lleva este vehiculo</h3>
+    <ul class="vehicle-detail__parts">
+      @for (partType of vehicle.partTypes ?? []; track partType.id) {
+        <li class="vehicle-detail__part">{{ partType.name }}</li>
+      }
+    </ul>
+
+    <h3>Recalls de seguridad</h3>
+
+    @if (recallsFailed()) {
+      <p>No pudimos consultar los recalls en este momento.</p>
+    } @else if (!recalls().length) {
+      <p>
+        NHTSA no reporta recalls para este vehiculo. Ten en cuenta que NHTSA
+        solo cubre vehiculos homologados en Estados Unidos, asi que esto no
+        garantiza que no existan campanas del fabricante en Colombia.
+      </p>
+    } @else {
+      <ul class="vehicle-detail__recalls">
+        @for (recall of recalls(); track recall.campaignNumber) {
+          <li
+            class="vehicle-detail__recall"
+            [class.vehicle-detail__recall--urgent]="recall.parkIt || recall.parkOutside"
+          >
+            @if (recall.parkIt) {
+              <p class="vehicle-detail__alert">No manejes este vehiculo hasta que lo reparen.</p>
+            }
+            @if (recall.parkOutside) {
+              <p class="vehicle-detail__alert">No lo parquees bajo techo: hay riesgo de incendio.</p>
+            }
+
+            <strong>{{ recall.component }}</strong>
+            <p>{{ recall.summary }}</p>
+
+            @if (recall.remedy) {
+              <p><em>Solucion:</em> {{ recall.remedy }}</p>
+            }
+
+            <small>Campana {{ recall.campaignNumber }} · reportado el {{ recall.reportedOn }}</small>
+          </li>
+        }
+      </ul>
+    }
+  }
+</section>
