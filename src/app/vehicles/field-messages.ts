@@ -21,6 +21,9 @@ export const FIELD_LABELS: Record<string, string> = {
   usageAtService: 'Kilometraje al momento del servicio',
   partBrand: 'Marca del repuesto',
   costCents: 'Costo',
+  email: 'Correo',
+  password: 'Contrasena',
+  name: 'Nombre',
 };
 
 const ERROR_MESSAGES: [RegExp, string][] = [
