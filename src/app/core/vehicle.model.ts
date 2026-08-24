@@ -57,3 +57,22 @@ export interface VinLookup {
 export interface ValidationErrors {
   errors: Record<string, string[]>;
 }
+
+export interface Recall {
+  campaignNumber: string;
+  manufacturer: string | null;
+  component: string | null;
+  summary: string | null;
+  consequence: string | null;
+  remedy: string | null;
+  reportedOn: string | null;
+  /** NHTSA marca asi los recalls graves: no manejar el vehiculo. */
+  parkIt: boolean;
+  /** No parquear bajo techo: riesgo de incendio. */
+  parkOutside: boolean;
+}
+
+export interface RecallsResponse {
+  vehicleId: number;
+  recalls: Recall[];
+}

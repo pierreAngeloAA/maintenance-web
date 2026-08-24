@@ -140,6 +140,26 @@ describe('VehicleForm', () => {
       httpMock.expectNone(() => true);
     });
 
+    it('prellena solo los campos que NHTSA conoce y respeta el resto', () => {
+      // Caso real: NHTSA a veces devuelve la marca pero deja el modelo vacio.
+      component.form.patchValue({ model: 'Accord escrito a mano', vin: '1HGBH41JXMN109186' });
+
+      component.onVinBlur();
+
+      httpMock.expectOne(`${baseUrl}/vin_lookups/1HGBH41JXMN109186`).flush({
+        vin: '1HGBH41JXMN109186',
+        found: true,
+        make: 'HONDA',
+        model: null,
+        modelYear: null,
+        vehicleType: null,
+      });
+
+      expect(component.form.controls.make.value).toBe('HONDA');
+      expect(component.form.controls.model.value).toBe('Accord escrito a mano');
+      expect(component.form.controls.vehicleType.value).toBe('car');
+    });
+
     it('no pisa lo que el usuario ya escribio cuando NHTSA no conoce el vehiculo', () => {
       component.form.patchValue({ make: 'AKT', model: 'NKD 125', vin: '9FBLSRB56KM123456' });
 
@@ -201,6 +221,32 @@ describe('VehicleForm', () => {
       req.flush({ id: 7 }, { status: 201, statusText: 'Created' });
 
       expect(router.navigate).toHaveBeenCalledWith(['/vehicles', 7]);
+    });
+
+    it('envia el VIN, la placa y la ciudad cuando el usuario si los llena', () => {
+      component.form.setValue({ ...validValues, vin: '5YJ3E1EA6PF384836', city: 'Bogota' });
+
+      component.submit();
+
+      const req = httpMock.expectOne(`${baseUrl}/vehicles`);
+      expect(req.request.body.vehicle.vin).toBe('5YJ3E1EA6PF384836');
+      expect(req.request.body.vehicle.plate).toBe('ABC12D');
+      expect(req.request.body.vehicle.city).toBe('Bogota');
+      req.flush({ id: 8 }, { status: 201, statusText: 'Created' });
+    });
+
+    it('muestra el nombre crudo del campo si el API reporta uno que no conocemos', () => {
+      component.form.setValue(validValues);
+
+      component.submit();
+
+      httpMock.expectOne(`${baseUrl}/vehicles`).flush(
+        { errors: { somethingNew: ['is invalid'] } },
+        { status: 422, statusText: 'Unprocessable Content' },
+      );
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.textContent).toContain('somethingNew');
     });
 
     it('no envia nada si el formulario es invalido', () => {

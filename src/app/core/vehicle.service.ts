@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, catchError, of } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { Vehicle, VehicleInput, VinLookup } from './vehicle.model';
+import { Recall, RecallsResponse, Vehicle, VehicleInput, VinLookup } from './vehicle.model';
 
 @Injectable({ providedIn: 'root' })
 export class VehicleService {
@@ -20,6 +20,16 @@ export class VehicleService {
 
   create(input: VehicleInput): Observable<Vehicle> {
     return this.http.post<Vehicle>(`${this.baseUrl}/vehicles`, { vehicle: input });
+  }
+
+  /**
+   * Recalls de NHTSA. Una lista vacia no significa que el vehiculo este sano:
+   * puede ser que NHTSA no lo cubra, cosa comun en Colombia.
+   */
+  recalls(vehicleId: number): Observable<Recall[]> {
+    return this.http
+      .get<RecallsResponse>(`${this.baseUrl}/vehicles/${vehicleId}/recalls`)
+      .pipe(map((response) => response.recalls));
   }
 
   /**
