@@ -16,6 +16,11 @@ export const FIELD_LABELS: Record<string, string> = {
   usageValue: 'Kilometraje',
   usageUnit: 'Unidad de uso',
   city: 'Ciudad',
+  partType: 'Pieza',
+  performedOn: 'Fecha del mantenimiento',
+  usageAtService: 'Kilometraje al momento del servicio',
+  partBrand: 'Marca del repuesto',
+  costCents: 'Costo',
 };
 
 const ERROR_MESSAGES: [RegExp, string][] = [
