@@ -76,3 +76,50 @@ export interface RecallsResponse {
   vehicleId: number;
   recalls: Recall[];
 }
+
+export type LifeUnit = 'km' | 'hours' | 'months';
+
+export interface MaintenanceRecord {
+  id: number;
+  vehicleId: number;
+  partType: PartType;
+  performedOn: string;
+  /** Decimal como string, igual que usageValue. */
+  usageAtService: string;
+  partBrand: string | null;
+  costCents: number | null;
+  currency: string;
+  notes: string | null;
+  createdAt: string;
+}
+
+export interface MaintenanceRecordInput {
+  partTypeId: number;
+  performedOn: string;
+  usageAtService: number;
+  partBrand?: string | null;
+  costCents?: number | null;
+  notes?: string | null;
+}
+
+/** De donde salio el uso acumulado con el que se calculo el riesgo. */
+export type RiskBasis = 'last_service' | 'vehicle_total' | 'model_year';
+
+export interface PartRisk {
+  partType: PartType;
+  usageSinceService: number;
+  basis: RiskBasis;
+  lifeUnit: LifeUnit;
+  /** 1 - R(t): que tan probable es que la pieza ya haya cumplido su vida. */
+  failureProbability: number;
+  /** 1 - R(t+dt)/R(t): riesgo en el proximo tramo. Es el numero util. */
+  conditionalRisk: number;
+  horizon: number;
+  /** True mientras los parametros sean estimaciones y no datos de usuarios. */
+  estimate: boolean;
+}
+
+export interface RisksResponse {
+  vehicleId: number;
+  risks: PartRisk[];
+}

@@ -13,6 +13,10 @@ describe('rutas de la app', () => {
     expect(paths).toContain('vehicles/:id');
   });
 
+  it('define la ruta para registrar un mantenimiento', () => {
+    expect(paths).toContain('vehicles/:id/maintenance/new');
+  });
+
   it('declara vehicles/new antes que vehicles/:id, si no el formulario nunca se abre', () => {
     expect(paths.indexOf('vehicles/new')).toBeLessThan(paths.indexOf('vehicles/:id'));
   });

@@ -1,0 +1,60 @@
+<section class="maintenance-form">
+  <a [routerLink]="['/vehicles', vehicle()?.id]">Volver al vehiculo</a>
+
+  @if (loading()) {
+    <p>Cargando el vehiculo...</p>
+  } @else if (error()) {
+    <p>No pudimos cargar este vehiculo.</p>
+  } @else {
+    <h2>Registrar un mantenimiento</h2>
+    <p class="maintenance-form__intro">
+      Cada mantenimiento que registres hace mas preciso el calculo de riesgo de tu vehiculo.
+    </p>
+
+    @if (errorEntries().length) {
+      <ul class="maintenance-form__errors">
+        @for (entry of errorEntries(); track entry.label) {
+          @for (message of entry.messages; track message) {
+            <li>{{ entry.label }} {{ message }}</li>
+          }
+        }
+      </ul>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label>
+        Pieza
+        <select formControlName="partTypeId">
+          <option [ngValue]="null">Escoge una pieza</option>
+          @for (partType of partTypes(); track partType.id) {
+            <option [ngValue]="partType.id">{{ partType.name }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Fecha del mantenimiento
+        <input type="date" formControlName="performedOn" [max]="today" />
+      </label>
+
+      <label>
+        Kilometraje al momento del servicio ({{ vehicle()?.usageUnit }})
+        <input type="number" formControlName="usageAtService" />
+      </label>
+
+      <label>
+        Marca del repuesto <span class="maintenance-form__optional">(opcional)</span>
+        <input formControlName="partBrand" />
+      </label>
+
+      <label>
+        Notas <span class="maintenance-form__optional">(opcional)</span>
+        <textarea formControlName="notes" rows="2"></textarea>
+      </label>
+
+      <button type="submit" [disabled]="form.invalid || saving()">
+        {{ saving() ? 'Guardando...' : 'Registrar mantenimiento' }}
+      </button>
+    </form>
+  }
+</section>
