@@ -1,0 +1,64 @@
+<form class="vehicle-form" [formGroup]="form" (ngSubmit)="submit()">
+  <h2>Registrar vehiculo</h2>
+
+  @if (errorEntries().length) {
+    <ul class="vehicle-form__errors">
+      @for (entry of errorEntries(); track entry.label) {
+        @for (message of entry.messages; track message) {
+          <li>{{ entry.label }} {{ message }}</li>
+        }
+      }
+    </ul>
+  }
+
+  <label>
+    Tipo de vehiculo
+    <select formControlName="vehicleType">
+      <option value="car">Automovil</option>
+      <option value="motorcycle">Motocicleta</option>
+    </select>
+  </label>
+
+  <label>
+    VIN <span class="vehicle-form__optional">(opcional)</span>
+    <input formControlName="vin" maxlength="17" (blur)="onVinBlur()" />
+  </label>
+
+  @if (lookupMessage()) {
+    <p class="vehicle-form__hint">{{ lookupMessage() }}</p>
+  }
+
+  <label>
+    Marca
+    <input formControlName="make" />
+  </label>
+
+  <label>
+    Modelo
+    <input formControlName="model" />
+  </label>
+
+  <label>
+    Año
+    <input type="number" formControlName="modelYear" />
+  </label>
+
+  <label>
+    Placa
+    <input formControlName="plate" />
+  </label>
+
+  <label>
+    Kilometraje (km)
+    <input type="number" formControlName="usageValue" />
+  </label>
+
+  <label>
+    Ciudad
+    <input formControlName="city" />
+  </label>
+
+  <button type="submit" [disabled]="form.invalid || saving()">
+    {{ saving() ? 'Guardando...' : 'Guardar vehiculo' }}
+  </button>
+</form>
