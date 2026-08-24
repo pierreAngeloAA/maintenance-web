@@ -25,6 +25,11 @@
     color: #555;
   }
 
+  &__error {
+    font-weight: 400;
+    color: #b3261e;
+  }
+
   &__errors {
     margin: 0;
     padding: 0.75rem 1.5rem;

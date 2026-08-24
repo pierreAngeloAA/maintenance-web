@@ -1,1 +1,71 @@
-/* You can add global styles to this file, and also import other style files */
+/* Estilos base de Maintenance. Deliberadamente sobrios: legibilidad primero. */
+
+:root {
+  --color-fondo: #f6f7f9;
+  --color-superficie: #ffffff;
+  --color-texto: #1c1f23;
+  --color-texto-suave: #5b636b;
+  --color-borde: #dfe3e8;
+  --color-primario: #14532d;
+  --color-primario-claro: #e7f2ea;
+  --color-peligro: #b3261e;
+  --color-peligro-claro: #fdecea;
+  --color-alerta: #d18b00;
+  --radio: 0.5rem;
+  --sombra: 0 1px 2px rgb(16 24 40 / 6%), 0 1px 3px rgb(16 24 40 / 10%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+}
+
+a {
+  color: var(--color-primario);
+}
+
+button {
+  padding: 0.6rem 1.1rem;
+  border: 1px solid transparent;
+  border-radius: var(--radio);
+  background: var(--color-primario);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  background: var(--color-superficie);
+  color: inherit;
+  font: inherit;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primario);
+    outline-offset: 1px;
+  }
+}

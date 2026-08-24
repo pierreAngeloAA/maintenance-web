@@ -128,12 +128,27 @@ describe('MaintenanceForm', () => {
     expect(navigate).toHaveBeenCalledWith(['/vehicles', 7]);
   });
 
-  it('no envia nada si el formulario es invalido', () => {
+  it('no envia nada si el formulario es invalido, pero dice que falta', () => {
     loadVehicle();
 
     component.submit();
+    fixture.detectChanges();
 
     httpMock.expectNone(() => true);
+    expect(fixture.nativeElement.querySelectorAll('.maintenance-form__error').length).toBeGreaterThan(0);
+  });
+
+  it('avisa cuando el guardado falla por algo que no es validacion', () => {
+    loadVehicle();
+    component.form.patchValue({ partTypeId: 1, performedOn: '2026-07-15', usageAtService: 12000 });
+
+    component.submit();
+    httpMock
+      .expectOne(`${baseUrl}/vehicles/7/maintenance_records`)
+      .flush('', { status: 0, statusText: 'Unknown Error' });
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('No pudimos guardar');
   });
 
   it('muestra los errores por campo que devuelve el API', () => {
