@@ -54,6 +54,20 @@
     }
   }
 
+  &__usuario {
+    align-self: center;
+    color: var(--color-texto-suave);
+    font-size: 0.85rem;
+  }
+
+  &__salir {
+    padding: 0.35rem 0.8rem;
+    background: transparent;
+    border-color: var(--color-borde);
+    color: var(--color-texto-suave);
+    font-size: 0.9rem;
+  }
+
   &__link--active {
     background: var(--color-primario-claro);
     color: var(--color-primario);

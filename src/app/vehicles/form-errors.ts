@@ -6,6 +6,8 @@ import { AbstractControl } from '@angular/forms';
  */
 const DEFAULT_MESSAGES: Record<string, string> = {
   required: 'Este dato es obligatorio',
+  email: 'Escribe un correo valido',
+  minlength: 'Es demasiado corto',
   pattern: 'El formato no es valido',
   min: 'El valor es muy bajo',
   max: 'El valor es muy alto',
@@ -18,6 +20,7 @@ const FIELD_MESSAGES: Record<string, Record<string, string>> = {
   usageValue: { min: 'El kilometraje no puede ser negativo' },
   usageAtService: { max: 'No puede ser mayor al kilometraje actual del vehiculo' },
   performedOn: { max: 'La fecha no puede estar en el futuro' },
+  password: { minlength: 'La contrasena debe tener al menos 8 caracteres' },
 };
 
 export function controlErrorMessage(field: string, control: AbstractControl | null): string | null {

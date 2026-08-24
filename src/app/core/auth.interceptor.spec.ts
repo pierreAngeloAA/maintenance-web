@@ -1,0 +1,94 @@
+import { TestBed } from '@angular/core/testing';
+import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { Router, provideRouter } from '@angular/router';
+
+import { authInterceptor } from './auth.interceptor';
+import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
+
+describe('authInterceptor', () => {
+  let http: HttpClient;
+  let httpMock: HttpTestingController;
+  let auth: AuthService;
+  const baseUrl = `${environment.apiUrl}/api/v1`;
+
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withInterceptors([authInterceptor])),
+        provideHttpClientTesting(),
+        provideRouter([]),
+      ],
+    });
+    http = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
+    auth = TestBed.inject(AuthService);
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+    localStorage.clear();
+  });
+
+  function iniciarSesion() {
+    auth.login({ email: 'pierre@example.com', password: 'x' }).subscribe();
+    httpMock.expectOne(`${baseUrl}/sessions`).flush(
+      {
+        user: { id: 1, email: 'pierre@example.com', name: null, createdAt: '2026-08-24T00:00:00Z' },
+        token: 'un-token',
+      },
+      { status: 201, statusText: 'Created' },
+    );
+  }
+
+  it('no manda cabecera cuando no hay sesion', () => {
+    http.get(`${baseUrl}/vehicles`).subscribe();
+
+    const req = httpMock.expectOne(`${baseUrl}/vehicles`);
+    expect(req.request.headers.has('Authorization')).toBeFalse();
+    req.flush([]);
+  });
+
+  it('agrega el token a las peticiones cuando hay sesion', () => {
+    iniciarSesion();
+
+    http.get(`${baseUrl}/vehicles`).subscribe();
+
+    const req = httpMock.expectOne(`${baseUrl}/vehicles`);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer un-token');
+    req.flush([]);
+  });
+
+  it('ante un 401 limpia la sesion y manda al login', () => {
+    iniciarSesion();
+    const navigate = spyOn(TestBed.inject(Router), 'navigate');
+
+    http.get(`${baseUrl}/vehicles`).subscribe({ error: () => undefined });
+    httpMock.expectOne(`${baseUrl}/vehicles`).flush('', { status: 401, statusText: 'Unauthorized' });
+
+    expect(auth.isLoggedIn()).toBeFalse();
+    expect(navigate).toHaveBeenCalledWith(['/login']);
+  });
+
+  it('no toca la sesion ante otros errores', () => {
+    iniciarSesion();
+
+    http.get(`${baseUrl}/vehicles`).subscribe({ error: () => undefined });
+    httpMock.expectOne(`${baseUrl}/vehicles`).flush('', { status: 500, statusText: 'Server Error' });
+
+    expect(auth.isLoggedIn()).toBeTrue();
+  });
+
+  it('un 401 al iniciar sesion no manda al login: ya esta ahi', () => {
+    const navigate = spyOn(TestBed.inject(Router), 'navigate');
+
+    auth.login({ email: 'pierre@example.com', password: 'mala' }).subscribe({ error: () => undefined });
+    httpMock
+      .expectOne(`${baseUrl}/sessions`)
+      .flush({ error: 'invalid_credentials' }, { status: 401, statusText: 'Unauthorized' });
+
+    expect(navigate).not.toHaveBeenCalled();
+  });
+});

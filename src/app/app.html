@@ -6,10 +6,17 @@
     </a>
 
     <nav class="app-nav">
-      <a routerLink="/vehicles" routerLinkActive="app-nav__link--active" [routerLinkActiveOptions]="{ exact: true }">
-        Mis vehiculos
-      </a>
-      <a routerLink="/vehicles/new" routerLinkActive="app-nav__link--active">Registrar vehiculo</a>
+      @if (isLoggedIn()) {
+        <a routerLink="/vehicles" routerLinkActive="app-nav__link--active" [routerLinkActiveOptions]="{ exact: true }">
+          Mis vehiculos
+        </a>
+        <a routerLink="/vehicles/new" routerLinkActive="app-nav__link--active">Registrar vehiculo</a>
+        <span class="app-nav__usuario">{{ user()?.email }}</span>
+        <button type="button" class="app-nav__salir" (click)="logout()">Salir</button>
+      } @else {
+        <a routerLink="/login" routerLinkActive="app-nav__link--active">Iniciar sesion</a>
+        <a routerLink="/register" routerLinkActive="app-nav__link--active">Crear cuenta</a>
+      }
     </nav>
   </div>
 </header>
