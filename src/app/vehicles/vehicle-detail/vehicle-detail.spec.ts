@@ -72,9 +72,10 @@ describe('VehicleDetail', () => {
     httpMock.expectOne(`${baseUrl}/vehicles/7/recalls`).flush({ vehicleId: 7, recalls });
   }
 
-  /** El tablero de riesgo es un hijo del detalle y hace su propia peticion. */
+  /** El tablero de riesgo y el historial son hijos y hacen sus propias peticiones. */
   function flushRisks() {
     httpMock.expectOne(`${baseUrl}/vehicles/7/risks`).flush({ vehicleId: 7, risks: [] });
+    httpMock.expectOne(`${baseUrl}/vehicles/7/maintenance_records`).flush([]);
   }
 
   it('muestra los datos del vehiculo', () => {
