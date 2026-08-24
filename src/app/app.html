@@ -1,6 +1,17 @@
 <header class="app-header">
-  <h1>{{ title() }}</h1>
-  <p class="app-header__tagline">Mantenimiento predictivo para tu vehiculo</p>
+  <div class="app-header__bar">
+    <a class="app-header__brand" routerLink="/vehicles">
+      <h1>Maintenance</h1>
+      <span class="app-header__tagline">Mantenimiento predictivo para tu vehiculo</span>
+    </a>
+
+    <nav class="app-nav">
+      <a routerLink="/vehicles" routerLinkActive="app-nav__link--active" [routerLinkActiveOptions]="{ exact: true }">
+        Mis vehiculos
+      </a>
+      <a routerLink="/vehicles/new" routerLinkActive="app-nav__link--active">Registrar vehiculo</a>
+    </nav>
+  </div>
 </header>
 
 <main class="app-main">

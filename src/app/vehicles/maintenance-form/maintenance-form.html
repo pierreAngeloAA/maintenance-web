@@ -11,6 +11,12 @@
       Cada mantenimiento que registres hace mas preciso el calculo de riesgo de tu vehiculo.
     </p>
 
+    @if (saveFailed()) {
+      <p class="maintenance-form__errors">
+        No pudimos guardar el mantenimiento. Revisa que el servidor este corriendo y vuelve a intentar.
+      </p>
+    }
+
     @if (errorEntries().length) {
       <ul class="maintenance-form__errors">
         @for (entry of errorEntries(); track entry.label) {
@@ -30,16 +36,25 @@
             <option [ngValue]="partType.id">{{ partType.name }}</option>
           }
         </select>
+        @if (errorFor('partTypeId'); as message) {
+          <small class="maintenance-form__error">{{ message }}</small>
+        }
       </label>
 
       <label>
         Fecha del mantenimiento
         <input type="date" formControlName="performedOn" [max]="today" />
+        @if (errorFor('performedOn'); as message) {
+          <small class="maintenance-form__error">{{ message }}</small>
+        }
       </label>
 
       <label>
         Kilometraje al momento del servicio ({{ vehicle()?.usageUnit }})
         <input type="number" formControlName="usageAtService" />
+        @if (errorFor('usageAtService'); as message) {
+          <small class="maintenance-form__error">{{ message }}</small>
+        }
       </label>
 
       <label>
@@ -52,7 +67,7 @@
         <textarea formControlName="notes" rows="2"></textarea>
       </label>
 
-      <button type="submit" [disabled]="form.invalid || saving()">
+      <button type="submit" [disabled]="saving()">
         {{ saving() ? 'Guardando...' : 'Registrar mantenimiento' }}
       </button>
     </form>

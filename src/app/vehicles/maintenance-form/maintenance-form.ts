@@ -7,6 +7,7 @@ import { MaintenanceService } from '../../core/maintenance.service';
 import { VehicleService } from '../../core/vehicle.service';
 import { MaintenanceRecordInput, Vehicle } from '../../core/vehicle.model';
 import { FIELD_LABELS, translateError } from '../field-messages';
+import { controlErrorMessage } from '../form-errors';
 
 @Component({
   selector: 'app-maintenance-form',
@@ -28,6 +29,7 @@ export class MaintenanceForm {
   readonly error = signal(false);
   readonly saving = signal(false);
   readonly serverErrors = signal<Record<string, string[]>>({});
+  readonly saveFailed = signal(false);
 
   /** Solo las piezas que lleva este vehiculo: no se le cambia la cadena a un auto. */
   readonly partTypes = computed(() => this.vehicle()?.partTypes ?? []);
@@ -69,10 +71,12 @@ export class MaintenanceForm {
 
   submit(): void {
     if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
 
     this.saving.set(true);
+    this.saveFailed.set(false);
     this.serverErrors.set({});
 
     this.maintenance.create(this.vehicleId, this.buildInput()).subscribe({
@@ -82,9 +86,15 @@ export class MaintenanceForm {
       },
       error: (error: HttpErrorResponse) => {
         this.saving.set(false);
-        this.serverErrors.set(error.error?.errors ?? {});
+        const fieldErrors = error.error?.errors;
+        this.serverErrors.set(fieldErrors ?? {});
+        this.saveFailed.set(!fieldErrors);
       },
     });
+  }
+
+  protected errorFor(field: string): string | null {
+    return controlErrorMessage(field, this.form.get(field));
   }
 
   protected errorEntries(): { label: string; messages: string[] }[] {
