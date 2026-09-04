@@ -45,11 +45,31 @@ describe('VehicleForm', () => {
   afterEach(() => httpMock.verify());
 
   describe('validacion', () => {
-    it('arranca invalido y con el boton deshabilitado', () => {
+    it('deja el boton habilitado para poder mostrar que falta al enviar', () => {
       const button = fixture.nativeElement.querySelector('button[type="submit"]') as HTMLButtonElement;
 
       expect(component.form.invalid).toBeTrue();
-      expect(button.disabled).toBeTrue();
+      expect(button.disabled).toBeFalse();
+    });
+
+    it('al enviar incompleto dice que campos faltan, en vez de no hacer nada', () => {
+      component.submit();
+      fixture.detectChanges();
+
+      const messages = Array.from(
+        fixture.nativeElement.querySelectorAll('.vehicle-form__error'),
+      ).map((el) => (el as HTMLElement).textContent?.trim());
+
+      expect(messages.length).toBeGreaterThan(0);
+      expect(messages).toContain('Este dato es obligatorio');
+    });
+
+    it('explica el formato del VIN cuando esta mal escrito', () => {
+      component.form.controls.vin.setValue('NOTAVIN');
+      component.submit();
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.textContent).toContain('17 caracteres');
     });
 
     it('es valido sin VIN: asi se registra una moto colombiana', () => {
@@ -277,6 +297,30 @@ describe('VehicleForm', () => {
       httpMock.expectOne(`${baseUrl}/vehicles`).flush('', { status: 500, statusText: 'Server Error' });
 
       expect(component.saving()).toBeFalse();
+    });
+
+    it('avisa cuando el guardado falla por algo que no es validacion, sin fallar en silencio', () => {
+      component.form.setValue(validValues);
+
+      component.submit();
+      httpMock.expectOne(`${baseUrl}/vehicles`).flush('', { status: 0, statusText: 'Unknown Error' });
+      fixture.detectChanges();
+
+      expect(component.saveFailed()).toBeTrue();
+      expect(fixture.nativeElement.textContent).toContain('No pudimos guardar');
+    });
+
+    it('no muestra el aviso general cuando el error si es de validacion', () => {
+      component.form.setValue(validValues);
+
+      component.submit();
+      httpMock.expectOne(`${baseUrl}/vehicles`).flush(
+        { errors: { vin: ['has already been taken'] } },
+        { status: 422, statusText: 'Unprocessable Content' },
+      );
+      fixture.detectChanges();
+
+      expect(component.saveFailed()).toBeFalse();
     });
   });
 });

@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { VehicleService } from '../../core/vehicle.service';
 import { VehicleInput, VehicleType } from '../../core/vehicle.model';
 import { FIELD_LABELS, translateError } from '../field-messages';
+import { controlErrorMessage } from '../form-errors';
 
 /** Mismo formato que valida el backend: ISO 3779 excluye I, O y Q. */
 const VIN_PATTERN = /^[A-HJ-NPR-Z0-9]{17}$/;
@@ -25,6 +26,8 @@ export class VehicleForm {
   readonly saving = signal(false);
   readonly lookupMessage = signal('');
   readonly serverErrors = signal<Record<string, string[]>>({});
+  /** Fallo que no es de validacion: servidor caido, red, 500. */
+  readonly saveFailed = signal(false);
 
   readonly form = this.fb.group({
     vehicleType: this.fb.nonNullable.control<VehicleType>('car', Validators.required),
@@ -71,11 +74,15 @@ export class VehicleForm {
   }
 
   submit(): void {
+    // El boton ya no se deshabilita: si el formulario esta incompleto marcamos
+    // todo como tocado para que se vea que falta, en vez de no hacer nada.
     if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
 
     this.saving.set(true);
+    this.saveFailed.set(false);
     this.serverErrors.set({});
 
     this.vehicles.create(this.buildInput()).subscribe({
@@ -85,9 +92,16 @@ export class VehicleForm {
       },
       error: (error: HttpErrorResponse) => {
         this.saving.set(false);
-        this.serverErrors.set(error.error?.errors ?? {});
+        const fieldErrors = error.error?.errors;
+        this.serverErrors.set(fieldErrors ?? {});
+        // Sin esto el guardado fallaba en silencio y el usuario no se enteraba.
+        this.saveFailed.set(!fieldErrors);
       },
     });
+  }
+
+  protected errorFor(field: string): string | null {
+    return controlErrorMessage(field, this.form.get(field));
   }
 
   protected errorEntries(): { label: string; messages: string[] }[] {

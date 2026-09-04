@@ -1,0 +1,41 @@
+.auth-form {
+  display: grid;
+  gap: 1rem;
+  max-width: 24rem;
+  margin-inline: auto;
+
+  form {
+    display: grid;
+    gap: 1rem;
+  }
+
+  label {
+    display: grid;
+    gap: 0.25rem;
+    font-weight: 600;
+  }
+
+  &__error {
+    font-weight: 400;
+    color: var(--color-peligro);
+  }
+
+  &__aviso {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radio);
+    background: var(--color-peligro-claro);
+    color: var(--color-peligro);
+  }
+
+  &__opcional {
+    font-weight: 400;
+    color: var(--color-texto-suave);
+  }
+
+  &__alterno {
+    margin: 0;
+    color: var(--color-texto-suave);
+    font-size: 0.9rem;
+  }
+}

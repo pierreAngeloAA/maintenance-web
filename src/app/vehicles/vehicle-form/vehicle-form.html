@@ -1,6 +1,12 @@
 <form class="vehicle-form" [formGroup]="form" (ngSubmit)="submit()">
   <h2>Registrar vehiculo</h2>
 
+  @if (saveFailed()) {
+    <p class="vehicle-form__errors">
+      No pudimos guardar el vehiculo. Revisa que el servidor este corriendo y vuelve a intentar.
+    </p>
+  }
+
   @if (errorEntries().length) {
     <ul class="vehicle-form__errors">
       @for (entry of errorEntries(); track entry.label) {
@@ -22,6 +28,9 @@
   <label>
     VIN <span class="vehicle-form__optional">(opcional)</span>
     <input formControlName="vin" maxlength="17" (blur)="onVinBlur()" />
+    @if (errorFor('vin'); as message) {
+      <small class="vehicle-form__error">{{ message }}</small>
+    }
   </label>
 
   @if (lookupMessage()) {
@@ -31,16 +40,25 @@
   <label>
     Marca
     <input formControlName="make" />
+    @if (errorFor('make'); as message) {
+      <small class="vehicle-form__error">{{ message }}</small>
+    }
   </label>
 
   <label>
     Modelo
     <input formControlName="model" />
+    @if (errorFor('model'); as message) {
+      <small class="vehicle-form__error">{{ message }}</small>
+    }
   </label>
 
   <label>
     Año
     <input type="number" formControlName="modelYear" />
+    @if (errorFor('modelYear'); as message) {
+      <small class="vehicle-form__error">{{ message }}</small>
+    }
   </label>
 
   <label>
@@ -51,6 +69,9 @@
   <label>
     Kilometraje (km)
     <input type="number" formControlName="usageValue" />
+    @if (errorFor('usageValue'); as message) {
+      <small class="vehicle-form__error">{{ message }}</small>
+    }
   </label>
 
   <label>
@@ -58,7 +79,7 @@
     <input formControlName="city" />
   </label>
 
-  <button type="submit" [disabled]="form.invalid || saving()">
+  <button type="submit" [disabled]="saving()">
     {{ saving() ? 'Guardando...' : 'Guardar vehiculo' }}
   </button>
 </form>

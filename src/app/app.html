@@ -1,8 +1,49 @@
 <header class="app-header">
-  <h1>{{ title() }}</h1>
-  <p class="app-header__tagline">Mantenimiento predictivo para tu vehiculo</p>
+  <div class="app-header__bar">
+    <a class="app-header__brand" routerLink="/vehicles">
+      <h1>Maintenance</h1>
+      <span class="app-header__tagline">Mantenimiento predictivo para tu vehiculo</span>
+    </a>
+
+    <nav class="app-nav">
+      @if (isLoggedIn()) {
+        <a routerLink="/vehicles" routerLinkActive="app-nav__link--active" [routerLinkActiveOptions]="{ exact: true }">
+          Mis vehiculos
+        </a>
+        <a routerLink="/vehicles/new" routerLinkActive="app-nav__link--active">Registrar vehiculo</a>
+        <span class="app-nav__usuario">{{ user()?.email }}</span>
+        <button type="button" class="app-nav__salir" (click)="logout()">Salir</button>
+      } @else {
+        <a routerLink="/login" routerLinkActive="app-nav__link--active">Iniciar sesion</a>
+        <a routerLink="/register" routerLinkActive="app-nav__link--active">Crear cuenta</a>
+      }
+    </nav>
+  </div>
 </header>
 
 <main class="app-main">
   <router-outlet />
 </main>
+
+<footer class="app-footer">
+  <div class="app-footer__bar">
+    <div>
+      <strong>Maintenance</strong>
+      <span>· Mantenimiento predictivo vehicular · {{ year }}</span>
+    </div>
+
+    <nav class="app-footer__links">
+      <a href="https://github.com/pierreAngeloAA/maintenance-api" target="_blank" rel="noopener">
+        Codigo del API
+      </a>
+      <a href="https://github.com/pierreAngeloAA/maintenance-web" target="_blank" rel="noopener">
+        Codigo de la interfaz
+      </a>
+    </nav>
+  </div>
+
+  <p class="app-footer__aviso">
+    Las probabilidades que muestra la app son estimaciones calculadas con modelos de confiabilidad
+    y mejoran a medida que registras tus mantenimientos. No reemplazan la revision de un mecanico.
+  </p>
+</footer>

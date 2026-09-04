@@ -3,11 +3,22 @@ import { Routes } from '@angular/router';
 import { VehicleDetail } from './vehicles/vehicle-detail/vehicle-detail';
 import { VehicleForm } from './vehicles/vehicle-form/vehicle-form';
 import { VehicleList } from './vehicles/vehicle-list/vehicle-list';
+import { MaintenanceForm } from './vehicles/maintenance-form/maintenance-form';
+import { Login } from './auth/login/login';
+import { Register } from './auth/register/register';
+import { authGuard } from './core/auth.guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'vehicles' },
-  { path: 'vehicles', component: VehicleList },
+
+  // Publicas.
+  { path: 'login', component: Login },
+  { path: 'register', component: Register },
+
+  // Todo lo demas exige sesion: el API tambien lo exige.
+  { path: 'vehicles', component: VehicleList, canActivate: [authGuard] },
   // Tiene que ir antes de 'vehicles/:id': si no, ':id' se traga la palabra "new".
-  { path: 'vehicles/new', component: VehicleForm },
-  { path: 'vehicles/:id', component: VehicleDetail },
+  { path: 'vehicles/new', component: VehicleForm, canActivate: [authGuard] },
+  { path: 'vehicles/:id', component: VehicleDetail, canActivate: [authGuard] },
+  { path: 'vehicles/:id/maintenance/new', component: MaintenanceForm, canActivate: [authGuard] },
 ];

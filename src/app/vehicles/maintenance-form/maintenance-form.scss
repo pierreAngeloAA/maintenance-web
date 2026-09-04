@@ -1,8 +1,13 @@
-.vehicle-form {
+.maintenance-form {
   display: grid;
   gap: 1rem;
   max-width: 32rem;
   margin-inline: auto;
+
+  form {
+    display: grid;
+    gap: 1rem;
+  }
 
   label {
     display: grid;
@@ -11,19 +16,20 @@
   }
 
   input,
-  select {
+  select,
+  textarea {
     padding: 0.5rem;
     font: inherit;
+  }
+
+  &__intro {
+    margin: 0;
+    color: #555;
   }
 
   &__optional {
     font-weight: 400;
     color: #666;
-  }
-
-  &__hint {
-    margin: 0;
-    color: #555;
   }
 
   &__error {

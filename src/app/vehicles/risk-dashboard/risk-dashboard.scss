@@ -1,0 +1,52 @@
+.risk-dashboard {
+  &__rows {
+    display: grid;
+    gap: 0.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__row {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-left-width: 5px;
+    border-radius: 0.4rem;
+
+    &--bajo {
+      border-left-color: #1b8a3a;
+    }
+
+    &--medio {
+      border-left-color: #d18b00;
+    }
+
+    &--alto {
+      border-left-color: #b3261e;
+      background: #fdecea;
+    }
+  }
+
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  &__value {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+
+  &__detail {
+    margin: 0.25rem 0 0;
+    color: #555;
+    font-size: 0.9rem;
+  }
+
+  &__estimate {
+    margin: 0.25rem 0 0;
+    color: #777;
+    font-size: 0.8rem;
+    font-style: italic;
+  }
+}

@@ -1,0 +1,34 @@
+<section class="risk-dashboard">
+  <h3>Riesgo por pieza</h3>
+
+  @if (loading()) {
+    <p>Calculando el riesgo de cada pieza...</p>
+  } @else if (error()) {
+    <p>No pudimos calcular el riesgo en este momento.</p>
+  } @else if (!risks().length) {
+    <p>Todavia no podemos calcular el riesgo de las piezas de este vehiculo.</p>
+  } @else {
+    <ul class="risk-dashboard__rows">
+      @for (risk of risks(); track risk.partType.id) {
+        <li class="risk-dashboard__row" [class]="'risk-dashboard__row--' + level(risk.conditionalRisk)">
+          <div class="risk-dashboard__head">
+            <strong>{{ risk.partType.name }}</strong>
+            <span class="risk-dashboard__value">{{ percent(risk.conditionalRisk) }}</span>
+          </div>
+
+          <p class="risk-dashboard__detail">
+            Riesgo de falla en los proximos {{ risk.horizon }} {{ risk.lifeUnit }}.
+            Lleva {{ risk.usageSinceService }} {{ risk.lifeUnit }}
+            {{ basisLabels[risk.basis] }}.
+          </p>
+
+          @if (risk.estimate) {
+            <p class="risk-dashboard__estimate">
+              Calculado con una estimacion de ingenieria, no con datos medidos de esta pieza.
+            </p>
+          }
+        </li>
+      }
+    </ul>
+  }
+</section>
