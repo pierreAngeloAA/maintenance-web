@@ -22,6 +22,18 @@
             {{ basisLabels[risk.basis] }}.
           </p>
 
+          @if (contextPenalty(risk); as penalty) {
+            <p class="risk-dashboard__context">
+              @if (city()) {
+                En {{ city() }} esta pieza dura alrededor de {{ penalty }}% menos,
+                por el clima y el terreno de la ciudad.
+              } @else {
+                Ajustado por el clima y el terreno: aqui esta pieza dura alrededor de
+                {{ penalty }}% menos.
+              }
+            </p>
+          }
+
           @if (risk.estimate) {
             <p class="risk-dashboard__estimate">
               Calculado con una estimacion de ingenieria, no con datos medidos de esta pieza.
@@ -30,5 +42,12 @@
         </li>
       }
     </ul>
+
+    @if (missingCity()) {
+      <p class="risk-dashboard__city-hint">
+        No sabemos en que ciudad rueda este vehiculo. Si registras la ciudad afinamos el
+        calculo: el clima y el terreno cambian cuanto dura cada pieza.
+      </p>
+    }
   }
 </section>
