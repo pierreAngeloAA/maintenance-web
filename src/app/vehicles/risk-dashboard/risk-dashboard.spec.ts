@@ -27,6 +27,7 @@ describe('RiskDashboard', () => {
     conditionalRisk: 0.173,
     horizon: 1000,
     estimate: true,
+    contextFactor: 1,
     ...overrides,
   });
 
@@ -129,5 +130,71 @@ describe('RiskDashboard', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent).toContain('No pudimos calcular');
+  });
+
+  describe('ajuste por contexto', () => {
+    const context = () => fixture.nativeElement.querySelector('.risk-dashboard__context');
+    const hint = () => fixture.nativeElement.querySelector('.risk-dashboard__city-hint');
+
+    function render(risks: PartRisk[], city: string | null = 'Bogota'): void {
+      fixture.componentRef.setInput('city', city);
+      httpMock.expectOne(url).flush({ vehicleId: 7, risks });
+      fixture.detectChanges();
+    }
+
+    it('explica cuanto menos dura la pieza y en que ciudad', () => {
+      render([risk({ contextFactor: 0.8 })]);
+
+      expect(context()?.textContent).toContain('Bogota');
+      expect(context()?.textContent).toContain('20%');
+    });
+
+    it('no habla de ajuste cuando el contexto no castigo la pieza', () => {
+      render([risk({ contextFactor: 1 })]);
+
+      expect(context()).toBeNull();
+    });
+
+    it('no revienta si el API todavia no manda el factor', () => {
+      render([risk({ contextFactor: undefined as unknown as number })]);
+
+      expect(context()).toBeNull();
+      expect(fixture.nativeElement.textContent).toContain('Cadena de transmision');
+    });
+
+    it('sugiere registrar la ciudad cuando no la sabemos', () => {
+      render([risk()], null);
+
+      expect(hint()?.textContent).toContain('ciudad');
+    });
+
+    it('no sugiere nada cuando la ciudad ya esta registrada', () => {
+      render([risk()]);
+
+      expect(hint()).toBeNull();
+    });
+
+    it('no sugiere registrar la ciudad si no hay piezas que mostrar', () => {
+      render([], null);
+
+      expect(hint()).toBeNull();
+    });
+
+    it('convierte el factor en el porcentaje de vida que se pierde', () => {
+      expect(component.contextPenalty(risk({ contextFactor: 0.8 }))).toBe(20);
+      expect(component.contextPenalty(risk({ contextFactor: 0.765 }))).toBe(24);
+
+      httpMock.expectOne(url).flush({ vehicleId: 7, risks: [] });
+    });
+
+    it('trata un factor ausente o absurdo como sin ajuste, nunca como un castigo', () => {
+      const raros = [undefined, null, 0, -1, 1, 1.5, NaN];
+
+      raros.forEach((factor) => {
+        expect(component.contextPenalty(risk({ contextFactor: factor as unknown as number }))).toBe(0);
+      });
+
+      httpMock.expectOne(url).flush({ vehicleId: 7, risks: [] });
+    });
   });
 });

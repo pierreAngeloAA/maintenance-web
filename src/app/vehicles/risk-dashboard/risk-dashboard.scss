@@ -43,10 +43,25 @@
     font-size: 0.9rem;
   }
 
+  &__context {
+    margin: 0.25rem 0 0;
+    color: #555;
+    font-size: 0.85rem;
+  }
+
   &__estimate {
     margin: 0.25rem 0 0;
     color: #777;
     font-size: 0.8rem;
     font-style: italic;
+  }
+
+  &__city-hint {
+    margin: 0.75rem 0 0;
+    padding: 0.6rem 0.75rem;
+    border: 1px dashed var(--color-borde);
+    border-radius: var(--radio);
+    color: var(--color-texto-suave);
+    font-size: 0.85rem;
   }
 }
