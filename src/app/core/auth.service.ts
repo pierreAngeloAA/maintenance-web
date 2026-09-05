@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable, catchError, of, tap } from 'rxjs';
 
-import { environment } from '../../environments/environment';
+import { API_SHARED } from './api-routes';
 import { AuthResponse, AuthUser, Credentials, RegistrationInput } from './auth.model';
 
 const STORAGE_KEY = 'maintenance.auth';
@@ -10,7 +10,6 @@ const STORAGE_KEY = 'maintenance.auth';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/api/v1`;
 
   private readonly session = signal<AuthResponse | null>(readStoredSession());
 
@@ -23,13 +22,13 @@ export class AuthService {
 
   login(credentials: Credentials): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>(`${this.baseUrl}/sessions`, { session: credentials })
+      .post<AuthResponse>(`${API_SHARED}/sessions`, { session: credentials })
       .pipe(tap((response) => this.store(response)));
   }
 
   register(input: RegistrationInput): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>(`${this.baseUrl}/users`, { user: input })
+      .post<AuthResponse>(`${API_SHARED}/users`, { user: input })
       .pipe(tap((response) => this.store(response)));
   }
 
@@ -39,7 +38,7 @@ export class AuthService {
    * peor que sacarlo.
    */
   logout(): Observable<unknown> {
-    return this.http.delete(`${this.baseUrl}/sessions`).pipe(
+    return this.http.delete(`${API_SHARED}/sessions`).pipe(
       catchError(() => of(null)),
       tap(() => this.clearSession()),
     );

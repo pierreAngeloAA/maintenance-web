@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, map, of } from 'rxjs';
 
-import { environment } from '../../environments/environment';
+import { API_CLIENT, API_SHARED } from './api-routes';
 import {
   PartRisk,
   Recall,
@@ -16,24 +16,23 @@ import {
 @Injectable({ providedIn: 'root' })
 export class VehicleService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/api/v1`;
 
   list(): Observable<Vehicle[]> {
-    return this.http.get<Vehicle[]>(`${this.baseUrl}/vehicles`);
+    return this.http.get<Vehicle[]>(`${API_CLIENT}/vehicles`);
   }
 
   get(id: number): Observable<Vehicle> {
-    return this.http.get<Vehicle>(`${this.baseUrl}/vehicles/${id}`);
+    return this.http.get<Vehicle>(`${API_CLIENT}/vehicles/${id}`);
   }
 
   create(input: VehicleInput): Observable<Vehicle> {
-    return this.http.post<Vehicle>(`${this.baseUrl}/vehicles`, { vehicle: input });
+    return this.http.post<Vehicle>(`${API_CLIENT}/vehicles`, { vehicle: input });
   }
 
   /** Riesgo de falla por pieza, ya ordenado de mayor a menor por el API. */
   risks(vehicleId: number): Observable<PartRisk[]> {
     return this.http
-      .get<RisksResponse>(`${this.baseUrl}/vehicles/${vehicleId}/risks`)
+      .get<RisksResponse>(`${API_CLIENT}/vehicles/${vehicleId}/risks`)
       .pipe(map((response) => response.risks));
   }
 
@@ -43,7 +42,7 @@ export class VehicleService {
    */
   recalls(vehicleId: number): Observable<Recall[]> {
     return this.http
-      .get<RecallsResponse>(`${this.baseUrl}/vehicles/${vehicleId}/recalls`)
+      .get<RecallsResponse>(`${API_CLIENT}/vehicles/${vehicleId}/recalls`)
       .pipe(map((response) => response.recalls));
   }
 
@@ -55,7 +54,7 @@ export class VehicleService {
     const normalized = vin.replace(/\s+/g, '').toUpperCase();
 
     return this.http
-      .get<VinLookup>(`${this.baseUrl}/vin_lookups/${normalized}`)
+      .get<VinLookup>(`${API_SHARED}/vin_lookups/${normalized}`)
       .pipe(catchError(() => of(emptyLookup(normalized))));
   }
 }

@@ -10,7 +10,7 @@ describe('RiskDashboard', () => {
   let fixture: ComponentFixture<RiskDashboard>;
   let component: RiskDashboard;
   let httpMock: HttpTestingController;
-  const url = `${environment.apiUrl}/api/v1/vehicles/7/risks`;
+  const url = `${environment.apiUrl}/api/v1/client/vehicles/7/risks`;
 
   const risk = (overrides: Partial<PartRisk> = {}): PartRisk => ({
     partType: {

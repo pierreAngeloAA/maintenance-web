@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 describe('MaintenanceHistory', () => {
   let fixture: ComponentFixture<MaintenanceHistory>;
   let httpMock: HttpTestingController;
-  const url = `${environment.apiUrl}/api/v1/vehicles/7/maintenance_records`;
+  const url = `${environment.apiUrl}/api/v1/client/vehicles/7/maintenance_records`;
 
   const record = (overrides: Partial<MaintenanceRecord> = {}): MaintenanceRecord => ({
     id: 1,

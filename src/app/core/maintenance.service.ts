@@ -2,13 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { environment } from '../../environments/environment';
+import { API_CLIENT } from './api-routes';
 import { MaintenanceRecord, MaintenanceRecordInput } from './vehicle.model';
 
 @Injectable({ providedIn: 'root' })
 export class MaintenanceService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/api/v1`;
 
   list(vehicleId: number): Observable<MaintenanceRecord[]> {
     return this.http.get<MaintenanceRecord[]>(this.url(vehicleId));
@@ -19,6 +18,6 @@ export class MaintenanceService {
   }
 
   private url(vehicleId: number): string {
-    return `${this.baseUrl}/vehicles/${vehicleId}/maintenance_records`;
+    return `${API_CLIENT}/vehicles/${vehicleId}/maintenance_records`;
   }
 }

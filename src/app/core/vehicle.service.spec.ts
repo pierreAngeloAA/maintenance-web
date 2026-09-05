@@ -10,6 +10,7 @@ describe('VehicleService', () => {
   let service: VehicleService;
   let httpMock: HttpTestingController;
   const baseUrl = `${environment.apiUrl}/api/v1`;
+  const clientUrl = `${baseUrl}/client`;
 
   const motorcycle: Vehicle = {
     id: 1,
@@ -44,7 +45,7 @@ describe('VehicleService', () => {
 
       service.list().subscribe((vehicles) => (result = vehicles));
 
-      const req = httpMock.expectOne(`${baseUrl}/vehicles`);
+      const req = httpMock.expectOne(`${clientUrl}/vehicles`);
       expect(req.request.method).toBe('GET');
       req.flush([motorcycle]);
 
@@ -58,7 +59,7 @@ describe('VehicleService', () => {
 
       service.get(1).subscribe((vehicle) => (result = vehicle));
 
-      const req = httpMock.expectOne(`${baseUrl}/vehicles/1`);
+      const req = httpMock.expectOne(`${clientUrl}/vehicles/1`);
       expect(req.request.method).toBe('GET');
       req.flush(motorcycle);
 
@@ -79,7 +80,7 @@ describe('VehicleService', () => {
 
       service.create(input).subscribe();
 
-      const req = httpMock.expectOne(`${baseUrl}/vehicles`);
+      const req = httpMock.expectOne(`${clientUrl}/vehicles`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({ vehicle: input });
       req.flush(motorcycle, { status: 201, statusText: 'Created' });

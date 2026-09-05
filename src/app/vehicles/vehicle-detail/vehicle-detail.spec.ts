@@ -11,7 +11,7 @@ describe('VehicleDetail', () => {
   let fixture: ComponentFixture<VehicleDetail>;
   let component: VehicleDetail;
   let httpMock: HttpTestingController;
-  const baseUrl = `${environment.apiUrl}/api/v1`;
+  const baseUrl = `${environment.apiUrl}/api/v1/client`;
 
   const vehicle: Vehicle = {
     id: 7,

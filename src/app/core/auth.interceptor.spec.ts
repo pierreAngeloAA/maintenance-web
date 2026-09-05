@@ -44,9 +44,9 @@ describe('authInterceptor', () => {
   }
 
   it('no manda cabecera cuando no hay sesion', () => {
-    http.get(`${baseUrl}/vehicles`).subscribe();
+    http.get(`${baseUrl}/client/vehicles`).subscribe();
 
-    const req = httpMock.expectOne(`${baseUrl}/vehicles`);
+    const req = httpMock.expectOne(`${baseUrl}/client/vehicles`);
     expect(req.request.headers.has('Authorization')).toBeFalse();
     req.flush([]);
   });
@@ -54,9 +54,9 @@ describe('authInterceptor', () => {
   it('agrega el token a las peticiones cuando hay sesion', () => {
     iniciarSesion();
 
-    http.get(`${baseUrl}/vehicles`).subscribe();
+    http.get(`${baseUrl}/client/vehicles`).subscribe();
 
-    const req = httpMock.expectOne(`${baseUrl}/vehicles`);
+    const req = httpMock.expectOne(`${baseUrl}/client/vehicles`);
     expect(req.request.headers.get('Authorization')).toBe('Bearer un-token');
     req.flush([]);
   });
@@ -65,8 +65,8 @@ describe('authInterceptor', () => {
     iniciarSesion();
     const navigate = spyOn(TestBed.inject(Router), 'navigate');
 
-    http.get(`${baseUrl}/vehicles`).subscribe({ error: () => undefined });
-    httpMock.expectOne(`${baseUrl}/vehicles`).flush('', { status: 401, statusText: 'Unauthorized' });
+    http.get(`${baseUrl}/client/vehicles`).subscribe({ error: () => undefined });
+    httpMock.expectOne(`${baseUrl}/client/vehicles`).flush('', { status: 401, statusText: 'Unauthorized' });
 
     expect(auth.isLoggedIn()).toBeFalse();
     expect(navigate).toHaveBeenCalledWith(['/login']);
@@ -75,8 +75,8 @@ describe('authInterceptor', () => {
   it('no toca la sesion ante otros errores', () => {
     iniciarSesion();
 
-    http.get(`${baseUrl}/vehicles`).subscribe({ error: () => undefined });
-    httpMock.expectOne(`${baseUrl}/vehicles`).flush('', { status: 500, statusText: 'Server Error' });
+    http.get(`${baseUrl}/client/vehicles`).subscribe({ error: () => undefined });
+    httpMock.expectOne(`${baseUrl}/client/vehicles`).flush('', { status: 500, statusText: 'Server Error' });
 
     expect(auth.isLoggedIn()).toBeTrue();
   });
