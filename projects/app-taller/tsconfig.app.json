@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../out-tsc/app-taller",
+    "types": []
+  },
+  "include": [
+    "src/**/*.ts",
+    "../shared/**/*.ts"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts",
+    "../shared/**/*.spec.ts"
+  ]
+}

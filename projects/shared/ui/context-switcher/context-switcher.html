@@ -1,0 +1,15 @@
+@if (visible()) {
+  <nav class="context-switcher" aria-label="Cambiar de contexto">
+    @for (context of contexts(); track context.kind + '-' + (context.organizationId ?? 0)) {
+      <button
+        type="button"
+        class="context-switcher__option"
+        [class.context-switcher__option--active]="isActive(context)"
+        [attr.aria-current]="isActive(context) ? 'true' : null"
+        (click)="switchTo(context)"
+      >
+        {{ label(context) }}
+      </button>
+    }
+  </nav>
+}

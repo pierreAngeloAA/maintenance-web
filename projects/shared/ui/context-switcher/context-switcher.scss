@@ -1,0 +1,18 @@
+.context-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.context-switcher__option {
+  background: transparent;
+  border: 1px solid currentcolor;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  padding: 0.25rem 0.75rem;
+}
+
+.context-switcher__option--active {
+  font-weight: 600;
+}

@@ -10,25 +10,25 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "maintenance-web": {
+    "app-cliente": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
         }
       },
-      "root": "",
-      "sourceRoot": "src",
+      "root": "projects/app-cliente",
+      "sourceRoot": "projects/app-cliente/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "browser": "src/main.ts",
+            "browser": "projects/app-cliente/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "tsconfig.app.json",
+            "tsConfig": "projects/app-cliente/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
@@ -37,8 +37,10 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
-            ]
+              "projects/app-cliente/src/styles.scss"
+            ],
+            "index": "projects/app-cliente/src/index.html",
+            "outputPath": "dist/app-cliente"
           },
           "configurations": {
             "production": {
@@ -62,8 +64,8 @@
               "sourceMap": true,
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.development.ts"
+                  "replace": "projects/shared/environments/environment.ts",
+                  "with": "projects/shared/environments/environment.development.ts"
                 }
               ]
             }
@@ -80,7 +82,10 @@
               "buildTarget": "maintenance-web:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "port": 4200
+          }
         },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"
@@ -92,7 +97,7 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "tsconfig.spec.json",
+            "tsConfig": "projects/app-cliente/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
@@ -101,17 +106,253 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "projects/app-cliente/src/styles.scss"
             ],
-            "karmaConfig": "karma.conf.js"
+            "karmaConfig": "karma.conf.js",
+            "include": [
+              "**/*.spec.ts",
+              "../../shared/**/*.spec.ts"
+            ]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
+              "projects/app-cliente/**/*.ts",
+              "projects/app-cliente/**/*.html",
+              "projects/shared/**/*.ts",
+              "projects/shared/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "app-taller": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/app-taller",
+      "sourceRoot": "projects/app-taller/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/app-taller/src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "projects/app-taller/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "projects/app-taller/src/styles.scss"
+            ],
+            "index": "projects/app-taller/src/index.html",
+            "outputPath": "dist/app-taller"
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "projects/shared/environments/environment.ts",
+                  "with": "projects/shared/environments/environment.development.ts"
+                }
+              ]
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "maintenance-web:build:production"
+            },
+            "development": {
+              "buildTarget": "maintenance-web:build:development"
+            }
+          },
+          "defaultConfiguration": "development",
+          "options": {
+            "port": 4201
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "projects/app-taller/tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "projects/app-taller/src/styles.scss"
+            ],
+            "karmaConfig": "karma.conf.js",
+            "include": [
+              "**/*.spec.ts"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/app-taller/**/*.ts",
+              "projects/app-taller/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "app-almacen": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/app-almacen",
+      "sourceRoot": "projects/app-almacen/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/app-almacen/src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "projects/app-almacen/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "projects/app-almacen/src/styles.scss"
+            ],
+            "index": "projects/app-almacen/src/index.html",
+            "outputPath": "dist/app-almacen"
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "projects/shared/environments/environment.ts",
+                  "with": "projects/shared/environments/environment.development.ts"
+                }
+              ]
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "maintenance-web:build:production"
+            },
+            "development": {
+              "buildTarget": "maintenance-web:build:development"
+            }
+          },
+          "defaultConfiguration": "development",
+          "options": {
+            "port": 4202
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "projects/app-almacen/tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "projects/app-almacen/src/styles.scss"
+            ],
+            "karmaConfig": "karma.conf.js",
+            "include": [
+              "**/*.spec.ts"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/app-almacen/**/*.ts",
+              "projects/app-almacen/**/*.html"
             ]
           }
         }
