@@ -12,7 +12,7 @@ describe('MaintenanceForm', () => {
   let component: MaintenanceForm;
   let httpMock: HttpTestingController;
   let navigate: jasmine.Spy;
-  const baseUrl = `${environment.apiUrl}/api/v1`;
+  const baseUrl = `${environment.apiUrl}/api/v1/client`;
 
   const vehicle: Vehicle = {
     id: 7,

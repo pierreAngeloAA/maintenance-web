@@ -11,7 +11,7 @@ describe('VehicleList', () => {
   let fixture: ComponentFixture<VehicleList>;
   let component: VehicleList;
   let httpMock: HttpTestingController;
-  const url = `${environment.apiUrl}/api/v1/vehicles`;
+  const url = `${environment.apiUrl}/api/v1/client/vehicles`;
 
   const vehicle = (overrides: Partial<Vehicle> = {}): Vehicle => ({
     id: 1,

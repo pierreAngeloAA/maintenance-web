@@ -12,6 +12,7 @@ describe('VehicleForm', () => {
   let httpMock: HttpTestingController;
   let router: jasmine.SpyObj<Router>;
   const baseUrl = `${environment.apiUrl}/api/v1`;
+  const clientUrl = `${baseUrl}/client`;
 
   const validValues = {
     vehicleType: 'motorcycle' as const,
@@ -224,7 +225,7 @@ describe('VehicleForm', () => {
 
       component.submit();
 
-      const req = httpMock.expectOne(`${baseUrl}/vehicles`);
+      const req = httpMock.expectOne(`${clientUrl}/vehicles`);
       expect(req.request.body).toEqual({
         vehicle: {
           vehicleType: 'motorcycle',
@@ -248,7 +249,7 @@ describe('VehicleForm', () => {
 
       component.submit();
 
-      const req = httpMock.expectOne(`${baseUrl}/vehicles`);
+      const req = httpMock.expectOne(`${clientUrl}/vehicles`);
       expect(req.request.body.vehicle.vin).toBe('5YJ3E1EA6PF384836');
       expect(req.request.body.vehicle.plate).toBe('ABC12D');
       expect(req.request.body.vehicle.city).toBe('Bogota');
@@ -260,7 +261,7 @@ describe('VehicleForm', () => {
 
       component.submit();
 
-      httpMock.expectOne(`${baseUrl}/vehicles`).flush(
+      httpMock.expectOne(`${clientUrl}/vehicles`).flush(
         { errors: { somethingNew: ['is invalid'] } },
         { status: 422, statusText: 'Unprocessable Content' },
       );
@@ -280,7 +281,7 @@ describe('VehicleForm', () => {
 
       component.submit();
 
-      httpMock.expectOne(`${baseUrl}/vehicles`).flush(
+      httpMock.expectOne(`${clientUrl}/vehicles`).flush(
         { errors: { vin: ['has already been taken'] } },
         { status: 422, statusText: 'Unprocessable Content' },
       );
@@ -294,7 +295,7 @@ describe('VehicleForm', () => {
       component.form.setValue(validValues);
 
       component.submit();
-      httpMock.expectOne(`${baseUrl}/vehicles`).flush('', { status: 500, statusText: 'Server Error' });
+      httpMock.expectOne(`${clientUrl}/vehicles`).flush('', { status: 500, statusText: 'Server Error' });
 
       expect(component.saving()).toBeFalse();
     });
@@ -303,7 +304,7 @@ describe('VehicleForm', () => {
       component.form.setValue(validValues);
 
       component.submit();
-      httpMock.expectOne(`${baseUrl}/vehicles`).flush('', { status: 0, statusText: 'Unknown Error' });
+      httpMock.expectOne(`${clientUrl}/vehicles`).flush('', { status: 0, statusText: 'Unknown Error' });
       fixture.detectChanges();
 
       expect(component.saveFailed()).toBeTrue();
@@ -314,7 +315,7 @@ describe('VehicleForm', () => {
       component.form.setValue(validValues);
 
       component.submit();
-      httpMock.expectOne(`${baseUrl}/vehicles`).flush(
+      httpMock.expectOne(`${clientUrl}/vehicles`).flush(
         { errors: { vin: ['has already been taken'] } },
         { status: 422, statusText: 'Unprocessable Content' },
       );

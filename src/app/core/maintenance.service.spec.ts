@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 describe('MaintenanceService', () => {
   let service: MaintenanceService;
   let httpMock: HttpTestingController;
-  const url = `${environment.apiUrl}/api/v1/vehicles/7/maintenance_records`;
+  const url = `${environment.apiUrl}/api/v1/client/vehicles/7/maintenance_records`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
