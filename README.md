@@ -1,49 +1,58 @@
 # maintenance-web
 
-Frontend en Angular de **Maintenance**: app de mantenimiento predictivo vehicular.
+Frontend de **Maintenance**, app de mantenimiento predictivo vehicular.
 
-En vez de usar tablas genericas de intervalos de servicio ("cambia el aceite cada 5.000 km"), la app
-modela la probabilidad de falla de cada pieza como una **curva de riesgo** que crece con el uso y se
-ajusta por el contexto real del vehiculo: clima de la ciudad, terreno, estilo de manejo y marca de
-los repuestos instalados.
+Un solo workspace con **tres aplicaciones** y una carpeta de codigo compartido.
 
-El backend Rails esta en el repo [`maintenance-api`](../maintenance-api).
+```
+projects/
+├── shared/        auth, http, interceptor, contexto, modelos, formularios, UI comun
+├── app-cliente/   :4200   mis vehiculos, riesgo, historial
+├── app-taller/    :4201   servicios, inspecciones
+└── app-almacen/   :4202   productos, inventario, ventas
+```
 
-## Stack
+Son **tres builds separados** —el cliente no descarga la pantalla de inventario del almacen— pero se
+publican bajo **un solo dominio** en rutas distintas (`/cliente`, `/taller`, `/almacen`). Mismo
+origen significa mismo `localStorage`, y por eso la sesion se comparte: cambiar de contexto es una
+navegacion normal, no un login nuevo.
 
-- Angular 20 (standalone components + signals)
-- SCSS
-- Jasmine + Karma
-- ESLint + Prettier
-- Despliegue en Render (sitio estatico)
+El codigo compartido se importa con el alias `@shared/*`.
 
-## Setup
-
-Requisitos: Node 22, npm 10.
+## Setup local
 
 ```bash
-git clone git@github.com:pierreAngeloAA/maintenance-web.git
-cd maintenance-web
 npm install
-npm start
-```
+npm start                 # cliente  en http://localhost:4200
+npm run start:taller      # taller   en http://localhost:4201
+npm run start:almacen     # almacen  en http://localhost:4202
 
-La app queda en `http://localhost:4200` y espera el API en `http://localhost:3000`.
-
-## Tests
-
-```bash
-npm test              # watch
-npm run test:ci       # headless, una corrida
-npm run test:coverage # headless + cobertura (minimo 80%)
+npm test                  # Karma en watch (app-cliente)
+npm run test:ci           # las tres suites, headless
+npm run test:coverage     # cobertura del cliente (incluye shared)
 npm run lint
+npm run build             # las tres apps
+npm run build:site        # las tres + el sitio unificado en dist/site
 ```
 
-## Como se trabaja
+El backend tiene que estar corriendo en `http://localhost:3000` (repo `maintenance-api`).
 
-TDD estricto (spec primero), una rama por issue, Conventional Commits y `main` protegida.
-El detalle esta en [`CLAUDE.md`](CLAUDE.md).
+Los specs de `shared/` corren una sola vez, con `app-cliente`: incluirlos en las tres los ejecutaria
+por triplicado.
 
-## Licencia
+## Contexto del actor
 
-MIT
+El token dice **quien eres**; el header `X-Organization-Id` dice **en nombre de quien actuas**. Lo
+pone el interceptor a partir del contexto activo, y el backend lo valida en cada peticion.
+
+`GET /me` devuelve los contextos disponibles. Con uno solo se entra directo; con dos o mas aparece
+el selector, que recuerda el ultimo elegido.
+
+## Configuracion de entornos
+
+`projects/shared/environments/`, una sola para las tres apps:
+
+- `environment.development.ts` -> `http://localhost:3000`
+- `environment.ts` -> URL de produccion en Render
+
+Nunca hardcodear URLs del API: los prefijos viven en `@shared/core/api-routes`.

@@ -1,13 +1,23 @@
-# Blueprint de Render para maintenance-web (sitio estatico).
+# Blueprint de Render para maintenance-web.
+#
+# Las tres apps se publican como UN SOLO sitio estatico, cada una en su ruta:
+# /cliente, /taller y /almacen. Mismo origen -> mismo localStorage -> la sesion
+# se comparte y cambiar de contexto no obliga a iniciarla de nuevo.
 services:
   - type: web
     name: maintenance-web
     runtime: static
     branch: main
-    buildCommand: npm ci && npm run build
-    staticPublishPath: ./dist/maintenance-web/browser
+    buildCommand: npm ci && npm run build && ./scripts/assemble-site.sh
+    staticPublishPath: ./dist/site
     routes:
-      # Angular es una SPA: todas las rutas se resuelven contra index.html.
+      # Cada app es una SPA: sus rutas se resuelven contra su propio index.html.
       - type: rewrite
-        source: /*
-        destination: /index.html
+        source: /cliente/*
+        destination: /cliente/index.html
+      - type: rewrite
+        source: /taller/*
+        destination: /taller/index.html
+      - type: rewrite
+        source: /almacen/*
+        destination: /almacen/index.html
