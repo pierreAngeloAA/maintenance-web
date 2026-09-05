@@ -23,6 +23,8 @@ export class RiskDashboard {
   private readonly vehicles = inject(VehicleService);
 
   readonly vehicleId = input.required<number>();
+  /** La ciudad del vehiculo: es lo que hace explicable el ajuste por contexto. */
+  readonly city = input<string | null>(null);
 
   readonly risks = signal<PartRisk[]>([]);
   readonly loading = signal(true);
@@ -60,5 +62,31 @@ export class RiskDashboard {
 
   percent(value: number): string {
     return `${(value * 100).toFixed(1)}%`;
+  }
+
+  /**
+   * Cuanta vida pierde la pieza por el contexto, en porcentaje entero: un factor
+   * de 0,8 son 20% menos de vida.
+   *
+   * Todo lo que no sea un castigo real cuenta como cero. El API puede no mandar
+   * el campo todavia, y un factor raro nunca puede convertirse en una alarma
+   * inventada: preferimos no explicar nada antes que explicar algo falso.
+   */
+  contextPenalty(risk: PartRisk): number {
+    const factor = risk.contextFactor;
+
+    if (typeof factor !== 'number' || !Number.isFinite(factor) || factor <= 0 || factor >= 1) {
+      return 0;
+    }
+
+    return Math.round((1 - factor) * 100);
+  }
+
+  /**
+   * Sin ciudad no hay ajuste posible. No lo escondemos: es la forma mas barata
+   * que tiene el usuario de mejorar su calculo.
+   */
+  missingCity(): boolean {
+    return !this.city() && this.risks().length > 0;
   }
 }

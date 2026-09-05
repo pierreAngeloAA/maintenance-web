@@ -117,6 +117,12 @@ export interface PartRisk {
   horizon: number;
   /** True mientras los parametros sean estimaciones y no datos de usuarios. */
   estimate: boolean;
+  /**
+   * Ajuste por el clima y el terreno de la ciudad del vehiculo: la vida
+   * caracteristica de la pieza se multiplica por este factor. 1 es sin ajuste,
+   * y menos de 1 significa que en ese contexto la pieza dura menos.
+   */
+  contextFactor: number;
 }
 
 export interface RisksResponse {

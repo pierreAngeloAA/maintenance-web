@@ -89,6 +89,34 @@ describe('VehicleDetail', () => {
     expect(fixture.nativeElement.textContent).toContain('12000');
   });
 
+  it('le pasa la ciudad al tablero de riesgo, que la necesita para explicar el ajuste', () => {
+    flushVehicle();
+    flushRecalls([]);
+    fixture.detectChanges();
+
+    httpMock.expectOne(`${baseUrl}/vehicles/7/risks`).flush({
+      vehicleId: 7,
+      risks: [
+        {
+          partType: vehicle.partTypes![0],
+          usageSinceService: 12000,
+          basis: 'vehicle_total',
+          lifeUnit: 'km',
+          failureProbability: 0.4,
+          conditionalRisk: 0.15,
+          horizon: 1000,
+          estimate: true,
+          contextFactor: 0.9,
+        },
+      ],
+    });
+    httpMock.expectOne(`${baseUrl}/vehicles/7/maintenance_records`).flush([]);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.risk-dashboard__context')?.textContent)
+      .toContain('Medellin');
+  });
+
   it('lista las piezas que aplican a este vehiculo', () => {
     flushVehicle();
     flushRecalls([]);
