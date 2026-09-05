@@ -3,13 +3,16 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "ng serve app-cliente",
+    "build": "ng build app-cliente && ng build app-taller && ng build app-almacen",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "test:ci": "ng test --watch=false --browsers=ChromeHeadless",
-    "test:coverage": "ng test --watch=false --browsers=ChromeHeadless --code-coverage",
-    "lint": "ng lint"
+    "test": "ng test app-cliente",
+    "test:ci": "ng test app-cliente --watch=false --browsers=ChromeHeadless && ng test app-taller --watch=false --browsers=ChromeHeadless && ng test app-almacen --watch=false --browsers=ChromeHeadless",
+    "test:coverage": "ng test app-cliente --watch=false --browsers=ChromeHeadless --code-coverage",
+    "lint": "ng lint app-cliente && ng lint app-taller && ng lint app-almacen",
+    "start:taller": "ng serve app-taller",
+    "start:almacen": "ng serve app-almacen",
+    "build:site": "npm run build && ./scripts/assemble-site.sh"
   },
   "prettier": {
     "printWidth": 100,

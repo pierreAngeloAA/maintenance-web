@@ -13,7 +13,11 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve"
+    "module": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["projects/shared/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -25,10 +29,22 @@
   "files": [],
   "references": [
     {
-      "path": "./tsconfig.app.json"
+      "path": "./projects/app-cliente/tsconfig.app.json"
     },
     {
-      "path": "./tsconfig.spec.json"
+      "path": "./projects/app-cliente/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/app-taller/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/app-taller/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/app-almacen/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/app-almacen/tsconfig.spec.json"
     }
   ]
 }

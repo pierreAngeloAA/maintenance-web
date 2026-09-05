@@ -1,0 +1,13 @@
+<header class="shell__header">
+  <h1>Maintenance · Taller</h1>
+  @if (isLoggedIn()) {
+    <app-context-switcher />
+    <button type="button" (click)="logout()">Cerrar sesion</button>
+  }
+</header>
+
+<main class="shell__main">
+  <router-outlet />
+</main>
+
+<footer class="shell__footer">Maintenance · {{ year }}</footer>
