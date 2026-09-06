@@ -1,0 +1,62 @@
+@if (loading()) {
+  <p class="estado">Cargando servicios…</p>
+} @else if (error()) {
+  <p class="estado estado--error">
+    No pudimos cargar los servicios.
+    <button type="button" (click)="load()">Reintentar</button>
+  </p>
+} @else {
+  <section>
+    <h2>En curso</h2>
+    @if (orders().length === 0) {
+      <p class="estado">No tienes trabajos abiertos.</p>
+    } @else {
+      @for (order of orders(); track order.id) {
+        <article class="tarjeta">
+          <p class="tarjeta__titulo">Servicio #{{ order.id }}</p>
+          <p class="tarjeta__dato">{{ order.status }}</p>
+          <button type="button" class="boton boton--principal" (click)="openOrder(order)">
+            Continuar
+          </button>
+        </article>
+      }
+    }
+  </section>
+
+  <section>
+    <h2>Disponibles cerca</h2>
+    @if (offers().length === 0) {
+      <p class="estado">No hay servicios disponibles en este momento.</p>
+    } @else {
+      @for (offer of offers(); track offer.id) {
+        <article class="tarjeta">
+          <p class="tarjeta__titulo">{{ vehicleLabel(offer) }}</p>
+          @if (offer.request.address) {
+            <p class="tarjeta__dato">{{ offer.request.address }}</p>
+          }
+          @if (offer.request.notes) {
+            <p class="tarjeta__dato">{{ offer.request.notes }}</p>
+          }
+          <div class="tarjeta__acciones">
+            <button
+              type="button"
+              class="boton boton--principal"
+              [disabled]="working() === offer.id"
+              (click)="take(offer)"
+            >
+              Tomar
+            </button>
+            <button
+              type="button"
+              class="boton"
+              [disabled]="working() === offer.id"
+              (click)="dismiss(offer)"
+            >
+              Pasar
+            </button>
+          </div>
+        </article>
+      }
+    }
+  </section>
+}
