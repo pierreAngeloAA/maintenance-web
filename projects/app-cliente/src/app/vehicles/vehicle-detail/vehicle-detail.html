@@ -31,6 +31,9 @@
       }
     </dl>
 
+    <h3>Diagnostico del mes</h3>
+    <app-health-report [vehicleId]="vehicle.id" />
+
     <app-risk-dashboard [vehicleId]="vehicle.id" [city]="vehicle.city" />
 
     <app-maintenance-history [vehicleId]="vehicle.id" [usageUnit]="vehicle.usageUnit" />

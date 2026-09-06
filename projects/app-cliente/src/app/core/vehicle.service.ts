@@ -4,6 +4,7 @@ import { Observable, catchError, map, of } from 'rxjs';
 
 import { API_CLIENT, API_SHARED } from '@shared/core/api-routes';
 import {
+  HealthReport,
   PartRisk,
   Recall,
   RecallsResponse,
@@ -30,6 +31,16 @@ export class VehicleService {
   }
 
   /** Riesgo de falla por pieza, ya ordenado de mayor a menor por el API. */
+  /** El diagnostico del mes. El API lo genera si todavia no existe. */
+  healthReport(vehicleId: number): Observable<HealthReport> {
+    return this.http.get<HealthReport>(`${API_CLIENT}/vehicles/${vehicleId}/health_report`);
+  }
+
+  /** Los meses anteriores: como venia el vehiculo hace tres meses. */
+  healthReports(vehicleId: number): Observable<HealthReport[]> {
+    return this.http.get<HealthReport[]>(`${API_CLIENT}/vehicles/${vehicleId}/health_reports`);
+  }
+
   risks(vehicleId: number): Observable<PartRisk[]> {
     return this.http
       .get<RisksResponse>(`${API_CLIENT}/vehicles/${vehicleId}/risks`)
