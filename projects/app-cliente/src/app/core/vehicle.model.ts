@@ -129,3 +129,45 @@ export interface RisksResponse {
   vehicleId: number;
   risks: PartRisk[];
 }
+
+/** Lo que midio el tecnico en la ultima visita. */
+export interface ReportObservation {
+  id: number;
+  itemId: number;
+  itemCode: string;
+  partTypeId: number | null;
+  value: string | number | boolean | null;
+  severity: string | null;
+  notes: string | null;
+}
+
+/**
+ * `present: false` no es lo mismo que "esta bien": es "nadie lo ha mirado". El
+ * API lo dice explicitamente en vez de omitir el campo, y la interfaz tiene que
+ * sostener esa distincion.
+ */
+export interface ReportInspection {
+  present: boolean;
+  id?: number;
+  performedAt?: string;
+  usageValue?: number;
+  observations?: ReportObservation[];
+}
+
+export interface ReportDocuments {
+  soatExpiresOn: string | null;
+  technicalInspectionExpiresOn: string | null;
+  runtCheckedAt: string | null;
+}
+
+export interface HealthReport {
+  id: number;
+  vehicleId: number;
+  period: string;
+  generatedAt: string;
+  usageValue: number;
+  usageUnit: string;
+  risks: PartRisk[];
+  inspection: ReportInspection;
+  documents: ReportDocuments;
+}

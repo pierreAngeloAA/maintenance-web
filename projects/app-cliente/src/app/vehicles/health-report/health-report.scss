@@ -1,0 +1,56 @@
+.documento {
+  margin: 0 0 0.25rem;
+}
+
+.documento--urgente {
+  font-weight: 700;
+}
+
+.documento--sin-dato {
+  opacity: 0.75;
+}
+
+.mediciones,
+.piezas__lista,
+.historial {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pieza {
+  border-bottom: 1px solid rgb(0 0 0 / 10%);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.pieza__nombre {
+  flex: 1;
+}
+
+.pieza__aviso {
+  flex-basis: 100%;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.severidad {
+  margin-left: 0.5rem;
+  opacity: 0.8;
+}
+
+.historial__boton {
+  background: transparent;
+  border: 1px solid currentcolor;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+}
+
+.estado {
+  padding: 0.5rem 0;
+}
