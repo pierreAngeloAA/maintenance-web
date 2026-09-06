@@ -1,0 +1,53 @@
+<h2>Ventas</h2>
+
+@if (loading()) {
+  <p class="estado">Cargando las ventas…</p>
+} @else if (error()) {
+  <p class="estado estado--error">
+    No pudimos cargar las ventas.
+    <button type="button" (click)="load()">Reintentar</button>
+  </p>
+} @else if (orders().length === 0) {
+  <p class="estado">Todavia no tienes ventas.</p>
+} @else {
+  @for (order of orders(); track order.id) {
+    <article class="venta" [class.venta--moviendo]="moving() === order.id">
+      <header class="venta__cabecera">
+        <strong>Orden #{{ order.id }}</strong>
+        <span>{{ buyerLabel(order) }}</span>
+        <span class="venta__estado">{{ labels[order.status] }}</span>
+        <span>{{ pesos(order.totalCents) }} {{ order.currency }}</span>
+      </header>
+
+      @if (order.address) {
+        <p class="venta__dato">{{ order.address }}</p>
+      }
+
+      <ul class="venta__items">
+        @for (item of order.items; track item.id) {
+          <li>{{ item.quantity }} × {{ item.productBrand }} {{ item.productName }}</li>
+        }
+      </ul>
+
+      @if (order.payments.length) {
+        <p class="venta__dato">
+          Pago {{ order.payments[0].gateway }} · {{ order.payments[0].gatewayRef ?? 'sin referencia' }}
+        </p>
+      }
+
+      @if (nextStatuses(order).length) {
+        <div class="venta__acciones">
+          @for (siguiente of nextStatuses(order); track siguiente) {
+            <button type="button" [disabled]="moving() === order.id" (click)="move(order, siguiente)">
+              {{ labels[siguiente] }}
+            </button>
+          }
+        </div>
+      }
+
+      @if (failed() === order.id) {
+        <p class="estado estado--error">No pudimos mover esta venta.</p>
+      }
+    </article>
+  }
+}

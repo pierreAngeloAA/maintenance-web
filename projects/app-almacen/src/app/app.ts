@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { AuthService } from '@shared/core/auth.service';
 import { ContextService } from '@shared/core/context.service';
@@ -7,7 +7,7 @@ import { ContextSwitcher } from '@shared/ui/context-switcher/context-switcher';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ContextSwitcher],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, ContextSwitcher],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

@@ -13,12 +13,13 @@ describe('rutas', () => {
     expect(register?.canActivate).toBeUndefined();
   });
 
-  it('el inicio exige sesion', () => {
-    expect(routes.find((route) => route.path === 'inicio')?.canActivate?.length).toBe(1);
+  it('el catalogo y las ventas exigen sesion', () => {
+    expect(routes.find((route) => route.path === 'catalogo')?.canActivate?.length).toBe(1);
+    expect(routes.find((route) => route.path === 'ventas')?.canActivate?.length).toBe(1);
   });
 
-  it('la raiz redirige al inicio', () => {
-    expect(routes.find((route) => route.path === '')?.redirectTo).toBe('inicio');
+  it('la raiz lleva al catalogo', () => {
+    expect(routes.find((route) => route.path === '')?.redirectTo).toBe('catalogo');
   });
 
   it('no deja rutas duplicadas', () => {

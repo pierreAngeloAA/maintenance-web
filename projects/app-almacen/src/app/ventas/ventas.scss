@@ -1,0 +1,40 @@
+.venta {
+  border: 1px solid rgb(0 0 0 / 15%);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+}
+
+.venta--moviendo {
+  opacity: 0.6;
+}
+
+.venta__cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.venta__estado {
+  font-weight: 600;
+}
+
+.venta__dato {
+  margin: 0.25rem 0;
+}
+
+.venta__items {
+  list-style: none;
+  margin: 0.5rem 0;
+  padding: 0;
+}
+
+.venta__acciones {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.estado {
+  padding: 0.5rem 0;
+}
