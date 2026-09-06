@@ -1,0 +1,38 @@
+// Al reves que la app del taller: aca se necesita ver muchas filas a la vez.
+.tabla {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.tabla th,
+.tabla td {
+  border-bottom: 1px solid rgb(0 0 0 / 10%);
+  padding: 0.4rem 0.5rem;
+  text-align: left;
+}
+
+.tabla__editable {
+  font: inherit;
+  padding: 0.2rem;
+  width: 7rem;
+}
+
+.tabla__fila--guardando {
+  opacity: 0.6;
+}
+
+.universal {
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.alta__campos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.estado {
+  padding: 0.5rem 0;
+}

@@ -1,6 +1,10 @@
 <header class="shell__header">
   <h1>Maintenance · Almacen</h1>
   @if (isLoggedIn()) {
+    <nav class="shell__nav">
+      <a routerLink="/catalogo" routerLinkActive="shell__nav--activo">Catalogo</a>
+      <a routerLink="/ventas" routerLinkActive="shell__nav--activo">Ventas</a>
+    </nav>
     <app-context-switcher />
     <button type="button" (click)="logout()">Cerrar sesion</button>
   }

@@ -12,36 +12,47 @@ ajusta por clima de la ciudad, terreno, estilo de manejo y marca de los repuesto
 Este repo es solo la interfaz. Toda la logica de prediccion vive en el backend Rails
 (`maintenance-api`); aca no se replican calculos de confiabilidad.
 
-## 2. Stack
+## 2. Un workspace, tres aplicaciones
 
-- Angular 20 (standalone components, signals)
-- SCSS
-- Jasmine + Karma para tests
-- ESLint (`@angular-eslint`) + Prettier
-- Despliegue en Render como sitio estatico (ver `render.yaml`)
-
-## 3. Setup local
-
-```bash
-npm install
-npm start                 # http://localhost:4200
-npm test                  # Karma en modo watch
-npm run test:ci           # una corrida headless
-npm run test:coverage     # headless + reporte de cobertura
-npm run lint
-npm run build
+```
+projects/
+├── shared/        auth, http, interceptor, contexto, modelos, formularios, UI comun
+├── app-cliente/   :4200   mis vehiculos, riesgo, diagnostico mensual
+├── app-taller/    :4201   tomar servicios, inspeccion de 30 min
+└── app-almacen/   :4202   productos, inventario, ventas
 ```
 
-El backend tiene que estar corriendo en `http://localhost:3000` (ver repo `maintenance-api`).
+`shared/` **no es una libreria de ng-packagr**: es una carpeta mapeada con el alias `@shared/*`.
+Para apps que se construyen juntas, ng-packagr solo agregaria un paso de build que no compra nada.
+
+Son **tres builds separados** —el cliente no descarga la pantalla de inventario del almacen— pero se
+publican bajo **un solo dominio** en rutas distintas (`/cliente`, `/taller`, `/almacen`). Mismo
+origen es mismo `localStorage`, y por eso la sesion se comparte: cambiar de contexto es una
+navegacion normal, no un login nuevo. Con subdominios el token de una app no existiria en la otra.
+
+Los specs de `shared/` corren una sola vez, con `app-cliente`: incluirlos en las tres los ejecutaria
+por triplicado.
+
+El backend tiene que estar corriendo en `http://localhost:3000` (repo `maintenance-api`).
+
+## 3. Contexto del actor
+
+El token dice **quien eres**; el header `X-Organization-Id` dice **en nombre de quien actuas**. Lo
+pone el interceptor a partir del contexto activo, y el backend lo valida en cada peticion.
+
+`GET /me` devuelve los contextos disponibles. Con uno solo se entra directo; con dos o mas aparece
+el selector, que recuerda el ultimo elegido.
 
 ## 4. Configuracion de entornos
 
-La URL del API vive en `src/environments/`:
+Los entornos son unos solos para las tres apps y viven en `projects/shared/environments/`:
 
 - `environment.development.ts` -> `http://localhost:3000`
 - `environment.ts` -> URL de produccion en Render
 
-Nunca hardcodear URLs del API dentro de componentes o servicios: siempre importar `environment`.
+Nunca hardcodear URLs del API en componentes ni servicios. Los prefijos por audiencia viven en
+`@shared/core/api-routes` (`API_SHARED` para lo comun, `API_CLIENT` para lo del cliente): si el API
+mueve una ruta, se cambia ahi y en ningun otro lado.
 
 ## 5. Flujo de trabajo
 
@@ -120,7 +131,8 @@ eso implica en la interfaz:
 
 - Componentes standalone; nada de NgModules nuevos.
 - Estado con signals (`signal`, `computed`), no con `BehaviorSubject` salvo que haga falta.
-- Las llamadas HTTP van en servicios de `src/app/core/`, nunca dentro de un componente.
+- Las llamadas HTTP van en servicios (`core/` de cada app, o `projects/shared/core/` si las
+  comparten varias), nunca dentro de un componente.
 - Los servicios se testean con `HttpTestingController`, sin pegarle al API real.
 - Nombres de archivos en kebab-case. Los componentes siguen el estilo del Angular CLI 20 sin
   sufijo (`vehicle-form.ts` -> clase `VehicleForm`); los servicios y modelos si llevan sufijo
