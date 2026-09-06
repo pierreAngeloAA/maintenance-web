@@ -1,0 +1,100 @@
+// Todo dimensionado para dedos, no para mouse.
+.fases {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.fases__paso {
+  border-bottom: 3px solid transparent;
+  font-size: 0.9rem;
+  padding-bottom: 0.25rem;
+}
+
+.fases__paso--activa {
+  border-bottom-color: currentcolor;
+  font-weight: 600;
+}
+
+.campos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.campo {
+  border-bottom: 1px solid rgb(0 0 0 / 10%);
+  padding: 0.75rem 0;
+}
+
+.campo--medido .campo__etiqueta {
+  font-weight: 600;
+}
+
+.campo__etiqueta {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.campo__unidad {
+  opacity: 0.7;
+}
+
+.campo__entrada {
+  font-size: 1.25rem;
+  min-height: 48px;
+  padding: 0 0.5rem;
+  width: 100%;
+}
+
+.campo__escala {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.campo__nivel {
+  border: 1px solid currentcolor;
+  border-radius: 6px;
+  cursor: pointer;
+  flex: 1;
+  font: inherit;
+  min-height: 48px;
+}
+
+.campo__nivel--activo {
+  font-weight: 700;
+}
+
+.campo__aviso {
+  display: block;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.navegacion {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.cierre {
+  flex: 1;
+}
+
+.cierre__foto {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.boton {
+  border: 1px solid currentcolor;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  min-height: 48px;
+  padding: 0 1.25rem;
+}
+
+.boton--principal {
+  font-weight: 600;
+}

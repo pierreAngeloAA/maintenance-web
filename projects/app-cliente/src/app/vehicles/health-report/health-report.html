@@ -1,0 +1,87 @@
+@if (loading()) {
+  <p class="estado">Preparando el diagnostico…</p>
+} @else if (error()) {
+  <p class="estado estado--error">
+    No pudimos cargar el diagnostico.
+    <button type="button" (click)="load()">Reintentar</button>
+  </p>
+} @else if (report(); as reporte) {
+  <section class="documentos">
+    <h3>Documentos</h3>
+    @if (reporte.documents.soatExpiresOn) {
+      <p class="documento" [class.documento--urgente]="urgent(soatDays())">
+        SOAT vence el {{ reporte.documents.soatExpiresOn }}
+        @if (soatDays() !== null) { <span>({{ soatDays() }} dias)</span> }
+      </p>
+    } @else {
+      <p class="documento documento--sin-dato">
+        Todavia no sabemos cuando vence el SOAT de este vehiculo.
+      </p>
+    }
+
+    @if (reporte.documents.technicalInspectionExpiresOn) {
+      <p class="documento" [class.documento--urgente]="urgent(inspectionDays())">
+        Tecnomecanica vence el {{ reporte.documents.technicalInspectionExpiresOn }}
+        @if (inspectionDays() !== null) { <span>({{ inspectionDays() }} dias)</span> }
+      </p>
+    }
+  </section>
+
+  <section class="visita">
+    <h3>Ultima revision</h3>
+    @if (neverInspected()) {
+      <p class="estado">
+        Ningun tecnico ha revisado este vehiculo todavia. El diagnostico de abajo sale solo del
+        modelo, sin mediciones reales.
+      </p>
+    } @else {
+      <p>Revisado el {{ reporte.inspection.performedAt }}, con {{ reporte.inspection.usageValue }} de uso.</p>
+      <ul class="mediciones">
+        @for (observacion of reporte.inspection.observations; track observacion.id) {
+          <li>
+            {{ observacion.itemCode }}: <strong>{{ observacion.value }}</strong>
+            @if (observacion.severity) { <span class="severidad">{{ observacion.severity }}</span> }
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  <section class="piezas">
+    <h3>Piezas</h3>
+    @if (reporte.risks.length === 0) {
+      <p class="estado">Todavia no hay piezas parametrizadas para este vehiculo.</p>
+    } @else {
+      <ul class="piezas__lista">
+        @for (riesgo of reporte.risks; track riesgo.partType.id) {
+          <li class="pieza">
+            <span class="pieza__nombre">{{ riesgo.partType.name }}</span>
+            <span class="pieza__riesgo">{{ riesgo.conditionalRisk }}</span>
+            @if (neverServiced(riesgo.basis)) {
+              <span class="pieza__aviso">Nunca se ha registrado un cambio de esta pieza</span>
+            }
+            @if (riesgo.estimate) {
+              <span class="pieza__aviso">Parametros estimados, no medidos</span>
+            }
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  <button type="button" class="historial__boton" (click)="toggleHistory()">
+    {{ showHistory() ? 'Ocultar' : 'Ver' }} meses anteriores
+  </button>
+
+  @if (showHistory()) {
+    @if (history().length === 0) {
+      <p class="estado">Este es el primer diagnostico de tu vehiculo.</p>
+    } @else {
+      <ul class="historial">
+        @for (anterior of history(); track anterior.id) {
+          <li>{{ anterior.period }} — {{ anterior.risks.length }} piezas evaluadas</li>
+        }
+      </ul>
+    }
+  }
+}

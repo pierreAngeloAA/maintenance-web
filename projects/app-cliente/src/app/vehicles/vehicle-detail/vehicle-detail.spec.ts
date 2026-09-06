@@ -72,8 +72,19 @@ describe('VehicleDetail', () => {
     httpMock.expectOne(`${baseUrl}/vehicles/7/recalls`).flush({ vehicleId: 7, recalls });
   }
 
-  /** El tablero de riesgo y el historial son hijos y hacen sus propias peticiones. */
+  /** El diagnostico, el tablero de riesgo y el historial son hijos y hacen sus
+   * propias peticiones. */
+  function flushHealthReport() {
+    httpMock.expectOne(`${baseUrl}/vehicles/7/health_report`).flush({
+      id: 1, vehicleId: 7, period: '2026-09-01', generatedAt: '2026-09-06T00:00:00Z',
+      usageValue: 18000, usageUnit: 'km', risks: [],
+      inspection: { present: false },
+      documents: { soatExpiresOn: null, technicalInspectionExpiresOn: null, runtCheckedAt: null },
+    });
+  }
+
   function flushRisks() {
+    flushHealthReport();
     httpMock.expectOne(`${baseUrl}/vehicles/7/risks`).flush({ vehicleId: 7, risks: [] });
     httpMock.expectOne(`${baseUrl}/vehicles/7/maintenance_records`).flush([]);
   }
@@ -93,6 +104,7 @@ describe('VehicleDetail', () => {
     flushVehicle();
     flushRecalls([]);
     fixture.detectChanges();
+    flushHealthReport();
 
     httpMock.expectOne(`${baseUrl}/vehicles/7/risks`).flush({
       vehicleId: 7,

@@ -13,12 +13,14 @@ describe('rutas', () => {
     expect(register?.canActivate).toBeUndefined();
   });
 
-  it('el inicio exige sesion', () => {
-    expect(routes.find((route) => route.path === 'inicio')?.canActivate?.length).toBe(1);
+  it('las pantallas de trabajo exigen sesion', () => {
+    expect(routes.find((route) => route.path === 'servicios')?.canActivate?.length).toBe(1);
+    expect(routes.find((route) => route.path === 'inspeccion/:orderId')?.canActivate?.length)
+      .toBe(1);
   });
 
-  it('la raiz redirige al inicio', () => {
-    expect(routes.find((route) => route.path === '')?.redirectTo).toBe('inicio');
+  it('la raiz lleva a los servicios', () => {
+    expect(routes.find((route) => route.path === '')?.redirectTo).toBe('servicios');
   });
 
   it('no deja rutas duplicadas', () => {
