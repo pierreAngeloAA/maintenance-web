@@ -1,0 +1,117 @@
+@if (loading()) {
+  <p class="estado">Cargando…</p>
+} @else if (error()) {
+  <p class="estado estado--error">No pudimos abrir la visita.</p>
+} @else if (!started()) {
+  <section class="arranque">
+    <h2>Antes de empezar</h2>
+    <label class="campo__etiqueta" for="odometro">
+      Kilometraje que marca el odometro (km)
+    </label>
+    <input class="campo__entrada" id="odometro" type="number" inputmode="numeric" #odometro />
+    @for (mensaje of closeErrors(); track mensaje) {
+      <p class="estado estado--error">{{ mensaje }}</p>
+    }
+    <button type="button" class="boton boton--principal" (click)="start(odometro.value)">
+      Empezar la visita
+    </button>
+  </section>
+} @else if (inspection(); as visita) {
+  <nav class="fases" aria-label="Fases de la visita">
+    @for (phase of phases; track phase; let i = $index) {
+      <span class="fases__paso" [class.fases__paso--activa]="i === phaseIndex()">
+        {{ phaseLabels[phase] }}
+      </span>
+    }
+  </nav>
+
+  <h2>{{ phaseLabels[currentPhase()] }}</h2>
+  <p class="avance">{{ phaseProgress() }} de {{ currentItems().length }} medidos</p>
+
+  <ul class="campos">
+    @for (item of currentItems(); track item.id) {
+      <li class="campo" [class.campo--medido]="measured(item)">
+        <label class="campo__etiqueta" [for]="'item-' + item.id">
+          {{ item.label }}
+          @if (item.unit) { <span class="campo__unidad">({{ item.unit }})</span> }
+        </label>
+
+        @switch (item.valueType) {
+          @case ('numeric') {
+            <input
+              class="campo__entrada"
+              [id]="'item-' + item.id"
+              type="number"
+              inputmode="decimal"
+              step="0.1"
+              [value]="valueOf(item)"
+              (change)="save(item, $any($event.target).value)"
+            />
+          }
+          @case ('scale') {
+            <div class="campo__escala">
+              @for (nivel of [1, 2, 3, 4]; track nivel) {
+                <button
+                  type="button"
+                  class="campo__nivel"
+                  [class.campo__nivel--activo]="valueOf(item) === nivel"
+                  (click)="save(item, nivel)"
+                >
+                  {{ nivel }}
+                </button>
+              }
+            </div>
+          }
+          @case ('boolean') {
+            <div class="campo__escala">
+              <button type="button" class="campo__nivel" (click)="save(item, true)">Si</button>
+              <button type="button" class="campo__nivel" (click)="save(item, false)">No</button>
+            </div>
+          }
+          @default {
+            <input
+              class="campo__entrada"
+              [id]="'item-' + item.id"
+              type="date"
+              [value]="valueOf(item)"
+              (change)="save(item, $any($event.target).value)"
+            />
+          }
+        }
+
+        @if (saving() === item.id) { <span class="campo__aviso">Guardando…</span> }
+        @if (failed() === item.id) {
+          <span class="campo__aviso campo__aviso--error">No se guardo. Intenta de nuevo.</span>
+        }
+      </li>
+    }
+  </ul>
+
+  <div class="navegacion">
+    <button type="button" class="boton" [disabled]="phaseIndex() === 0" (click)="previousPhase()">
+      Atras
+    </button>
+
+    @if (isLastPhase()) {
+      <div class="cierre">
+        <label class="cierre__foto">
+          Foto de la visita
+          <input type="file" accept="image/*" capture="environment" multiple (change)="addPhoto($event)" />
+        </label>
+        @for (mensaje of closeErrors(); track mensaje) {
+          <p class="estado estado--error">{{ mensaje }}</p>
+        }
+        <button
+          type="button"
+          class="boton boton--principal"
+          [disabled]="closing()"
+          (click)="close()"
+        >
+          Cerrar la visita
+        </button>
+      </div>
+    } @else {
+      <button type="button" class="boton boton--principal" (click)="nextPhase()">Siguiente</button>
+    }
+  </div>
+}
