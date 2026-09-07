@@ -5,6 +5,27 @@ import { WorkshopService } from '../core/workshop.service';
 import { ServiceOffer, ServiceOrder } from '../core/workshop.model';
 
 /**
+ * Los estados y las clases de servicio viajan en ingles porque son el enum del
+ * API. El tecnico los lee en espanol: el codigo esta en ingles, la pantalla no.
+ *
+ * Si aparece un valor que no conocemos se muestra tal cual en vez de esconderlo:
+ * un estado sin traducir es un aviso de que falta trabajo, no una pantalla rota.
+ */
+const ORDER_STATUS_LABELS: Record<string, string> = {
+  assigned: 'Asignado',
+  en_route: 'En camino',
+  in_progress: 'En proceso',
+  completed: 'Completado',
+  canceled: 'Cancelado',
+};
+
+const REQUEST_KIND_LABELS: Record<string, string> = {
+  monthly_inspection: 'Revision mensual',
+  repair: 'Reparacion',
+  quote: 'Cotizacion',
+};
+
+/**
  * Lo primero que ve el tecnico: que hay para tomar y que ya tomo.
  *
  * Pensado para el celular, de pie junto al carro: pocos botones y grandes.
@@ -75,6 +96,14 @@ export class Servicios {
     const { make, model, modelYear } = offer.vehicle;
 
     return `${make} ${model} ${modelYear}`;
+  }
+
+  orderStatusLabel(status: string): string {
+    return ORDER_STATUS_LABELS[status] ?? status;
+  }
+
+  requestKindLabel(kind: string): string {
+    return REQUEST_KIND_LABELS[kind] ?? kind;
   }
 
   private loadOrders(): void {
