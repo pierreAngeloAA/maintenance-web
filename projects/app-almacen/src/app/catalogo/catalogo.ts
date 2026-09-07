@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, ElementRef, effect, inject, signal, viewChild } from '@angular/core';
 
 import { StoreService } from '../core/store.service';
 import { PartType, Product } from '../core/store.model';
@@ -10,6 +10,9 @@ import { PartType, Product } from '../core/store.model';
  * escritorio cargando decenas o cientos de productos. Eso invierte las
  * prioridades — tabla densa en vez de tarjetas grandes, y edicion en linea:
  * cambiar un precio o un stock no deberia costar tres pantallas.
+ *
+ * Por lo mismo el alta vive en un modal y no en una fila de campos encima de
+ * la tabla: el formulario se usa un momento y la tabla se mira todo el dia.
  */
 @Component({
   selector: 'app-catalogo',
@@ -27,13 +30,44 @@ export class Catalogo {
   readonly failed = signal<number | null>(null);
   readonly formErrors = signal<string[]>([]);
   readonly creating = signal(false);
+  readonly formOpen = signal(false);
+
+  private readonly dialog = viewChild<ElementRef<HTMLDialogElement>>('dialogo');
 
   constructor() {
+    // `showModal()` trae gratis lo que un div con position:fixed hay que
+    // reimplementar mal: foco atrapado adentro, cierre con Escape, fondo
+    // inerte y backdrop.
+    effect(() => {
+      const dialog = this.dialog()?.nativeElement;
+
+      if (!dialog) {
+        return;
+      }
+
+      if (this.formOpen() && !dialog.open) {
+        dialog.showModal();
+      } else if (!this.formOpen() && dialog.open) {
+        dialog.close();
+      }
+    });
+
     this.load();
     this.store.partTypes().subscribe({
       next: (types) => this.partTypes.set(types),
       error: () => undefined,
     });
+  }
+
+  openForm(): void {
+    this.formErrors.set([]);
+    this.formOpen.set(true);
+  }
+
+  /** Tambien lo llama el evento `close` nativo: cerrar con Escape no puede
+   *  dejar el estado del componente mintiendo. */
+  closeForm(): void {
+    this.formOpen.set(false);
   }
 
   load(): void {
@@ -119,6 +153,7 @@ export class Catalogo {
       .subscribe({
         next: (product) => {
           this.creating.set(false);
+          this.formOpen.set(false);
           this.products.update((current) => [product, ...current]);
         },
         error: () => {

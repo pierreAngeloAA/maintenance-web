@@ -133,6 +133,20 @@ describe('Catalogo', () => {
   });
 
   describe('alta de producto', () => {
+    function dialogo(): HTMLDialogElement {
+      return fixture.nativeElement.querySelector('dialog');
+    }
+
+    function boton(label: string): HTMLElement {
+      return Array.from(fixture.nativeElement.querySelectorAll('button') as NodeListOf<HTMLElement>)
+        .find((b) => b.textContent?.trim() === label)!;
+    }
+
+    function abrir(): void {
+      boton('Agregar producto').click();
+      fixture.detectChanges();
+    }
+
     function fill(values: Record<string, string>): void {
       const el = fixture.nativeElement;
       el.querySelector('[aria-label="Nombre"]').value = values['name'] ?? '';
@@ -140,14 +154,30 @@ describe('Catalogo', () => {
       el.querySelector('[aria-label="SKU"]').value = values['sku'] ?? '';
       el.querySelector('[aria-label="Precio"]').value = values['price'] ?? '';
       el.querySelector('[aria-label="Stock"]').value = values['stock'] ?? '';
-      const agregar = Array.from(el.querySelectorAll('button') as NodeListOf<HTMLElement>)
-        .find((b) => b.textContent?.trim() === 'Agregar');
-      agregar!.click();
+      boton('Guardar').click();
       fixture.detectChanges();
     }
 
+    // El catalogo es la pantalla que mas altura necesita: el formulario no
+    // puede estar ocupando espacio permanente encima de la tabla.
+    it('no muestra el formulario hasta que se pide', () => {
+      render();
+
+      expect(dialogo().open).toBe(false);
+      expect(fixture.nativeElement.querySelector('[aria-label="Nombre"]')).toBeNull();
+    });
+
+    it('abre el formulario en un modal', () => {
+      render();
+      abrir();
+
+      expect(dialogo().open).toBe(true);
+      expect(fixture.nativeElement.querySelector('[aria-label="Nombre"]')).not.toBeNull();
+    });
+
     it('agrega un producto', () => {
       render();
+      abrir();
       fill({ name: 'Filtro de aceite', brand: 'Mann', sku: 'F-1', price: '35000', stock: '12' });
 
       const req = httpMock.expectOne(productsUrl);
@@ -161,8 +191,19 @@ describe('Catalogo', () => {
       expect(text()).toContain('Filtro de aceite');
     });
 
+    it('cierra el modal cuando el producto queda guardado', () => {
+      render();
+      abrir();
+      fill({ name: 'Filtro de aceite', brand: 'Mann', price: '35000', stock: '12' });
+      httpMock.expectOne(productsUrl).flush({ ...product, id: 2 });
+      fixture.detectChanges();
+
+      expect(dialogo().open).toBe(false);
+    });
+
     it('dice que falta antes de mandar nada', () => {
       render();
+      abrir();
       fill({ name: '', brand: '', price: 'abc' });
 
       httpMock.expectNone(productsUrl);
@@ -171,13 +212,49 @@ describe('Catalogo', () => {
       expect(text()).toContain('El precio tiene que ser un numero');
     });
 
-    it('avisa si el API rechaza el producto', () => {
+    // Cerrarlo obligaria a reescribir todo el formulario.
+    it('deja el modal abierto si el API rechaza el producto', () => {
       render();
+      abrir();
       fill({ name: 'X', brand: 'Y', price: '100' });
       httpMock.expectOne(productsUrl).flush('', { status: 422, statusText: 'Unprocessable' });
       fixture.detectChanges();
 
       expect(text()).toContain('No pudimos guardar el producto');
+      expect(dialogo().open).toBe(true);
+    });
+
+    it('cierra el modal al cancelar sin mandar nada', () => {
+      render();
+      abrir();
+      boton('Cancelar').click();
+      fixture.detectChanges();
+
+      httpMock.expectNone(productsUrl);
+      expect(dialogo().open).toBe(false);
+    });
+
+    // Reabrir y encontrar los datos del anterior es la forma facil de subir dos
+    // veces la misma pieza.
+    it('olvida lo escrito al cerrar y volver a abrir', () => {
+      render();
+      abrir();
+      fixture.nativeElement.querySelector('[aria-label="Nombre"]').value = 'Filtro';
+      boton('Cancelar').click();
+      fixture.detectChanges();
+      abrir();
+
+      expect(fixture.nativeElement.querySelector('[aria-label="Nombre"]').value).toBe('');
+    });
+
+    // Cerrar con Escape no puede dejar el estado del componente mintiendo.
+    it('se entera cuando el modal se cierra por fuera del boton', () => {
+      render();
+      abrir();
+      dialogo().dispatchEvent(new Event('close'));
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('[aria-label="Nombre"]')).toBeNull();
     });
   });
 });
