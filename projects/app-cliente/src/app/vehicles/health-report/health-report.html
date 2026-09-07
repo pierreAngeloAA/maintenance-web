@@ -56,7 +56,7 @@
         @for (riesgo of reporte.risks; track riesgo.partType.id) {
           <li class="pieza">
             <span class="pieza__nombre">{{ riesgo.partType.name }}</span>
-            <span class="pieza__riesgo">{{ riesgo.conditionalRisk }}</span>
+            <span class="pieza__riesgo">{{ percent(riesgo.conditionalRisk) }}</span>
             @if (neverServiced(riesgo.basis)) {
               <span class="pieza__aviso">Nunca se ha registrado un cambio de esta pieza</span>
             }

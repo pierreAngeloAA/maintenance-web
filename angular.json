@@ -76,14 +76,15 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "maintenance-web:build:production"
+              "buildTarget": "app-cliente:build:production"
             },
             "development": {
-              "buildTarget": "maintenance-web:build:development"
+              "buildTarget": "app-cliente:build:development"
             }
           },
           "defaultConfiguration": "development",
           "options": {
+            "servePath": "/cliente/",
             "port": 4200
           }
         },
@@ -194,14 +195,15 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "maintenance-web:build:production"
+              "buildTarget": "app-taller:build:production"
             },
             "development": {
-              "buildTarget": "maintenance-web:build:development"
+              "buildTarget": "app-taller:build:development"
             }
           },
           "defaultConfiguration": "development",
           "options": {
+            "servePath": "/taller/",
             "port": 4201
           }
         },
@@ -309,14 +311,15 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "maintenance-web:build:production"
+              "buildTarget": "app-almacen:build:production"
             },
             "development": {
-              "buildTarget": "maintenance-web:build:development"
+              "buildTarget": "app-almacen:build:development"
             }
           },
           "defaultConfiguration": "development",
           "options": {
+            "servePath": "/almacen/",
             "port": 4202
           }
         },
