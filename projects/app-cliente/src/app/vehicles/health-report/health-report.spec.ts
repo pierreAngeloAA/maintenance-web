@@ -199,4 +199,22 @@ describe('HealthReportPanel', () => {
 
     expect(text()).toContain('Todavia no hay piezas parametrizadas');
   });
+
+  describe('formato del riesgo', () => {
+    it('muestra el riesgo como porcentaje y no como probabilidad cruda', () => {
+      render();
+
+      const texto = fixture.nativeElement.textContent;
+      expect(texto).toContain('8.0%');
+      expect(texto).not.toContain('0.08');
+    });
+
+    it('redondea igual que el tablero de riesgo, a un decimal', () => {
+      const panel = fixture.componentInstance;
+
+      expect(panel.percent(0.991388266366329)).toBe('99.1%');
+      expect(panel.percent(1)).toBe('100.0%');
+      expect(panel.percent(0)).toBe('0.0%');
+    });
+  });
 });
