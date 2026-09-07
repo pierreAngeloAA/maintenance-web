@@ -102,6 +102,22 @@ describe('App (taller)', () => {
       expect(enlace.textContent).toContain('Servicios');
     });
 
+    it('deja cerrar sesion junto a los enlaces, no en otra esquina', () => {
+      logIn();
+      const fixture = render();
+      httpMock.expectOne(`${API_SHARED}/me`).flush({
+        user: { id: 1, email: 'tecnico@taller.co', name: 'Andres', createdAt: '' },
+        contexts: [{ kind: 'workshop', organizationId: 1, name: 'Taller La 80' }],
+        activeContext: { kind: 'workshop', organizationId: 1 },
+      });
+      fixture.detectChanges();
+
+      const salir = fixture.nativeElement.querySelector('.app-nav .app-nav__salir');
+
+      expect(salir).not.toBeNull();
+      expect(salir.textContent).toContain('Cerrar sesion');
+    });
+
     it('no muestra la navegacion a quien no ha entrado', () => {
       const fixture = render();
 

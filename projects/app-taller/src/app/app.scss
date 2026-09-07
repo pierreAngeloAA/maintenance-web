@@ -58,15 +58,22 @@
   font-size: 0.8rem;
 }
 
+/* Navegacion y salir van juntos: son las acciones de moverse por la app. */
 .app-nav {
+  align-items: center;
   display: flex;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
 
   a {
     border-bottom: 2px solid transparent;
     padding: 0.25rem 0;
     text-decoration: none;
   }
+}
+
+.app-nav__salir {
+  padding: 0.4rem 0.9rem;
 }
 
 .app-nav__link--active {
@@ -87,10 +94,6 @@
 .app-header__usuario {
   color: var(--color-texto-suave);
   font-size: 0.85rem;
-}
-
-.app-header__salir {
-  padding: 0.4rem 0.9rem;
 }
 
 .app-main {
