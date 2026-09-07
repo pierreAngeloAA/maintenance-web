@@ -4,15 +4,31 @@
   gap: 0.5rem;
 }
 
+/**
+ * El `button` global pinta fondo verde y texto blanco. Aca solo se quitaba el
+ * fondo, asi que el texto quedaba blanco sobre el fondo claro de la cabecera:
+ * el selector existia pero no se leia. Por eso el color y el borde se declaran
+ * explicitamente en vez de heredar.
+ */
 .context-switcher__option {
   background: transparent;
-  border: 1px solid currentcolor;
+  border: 1px solid var(--color-borde);
   border-radius: 999px;
+  color: var(--color-texto);
   cursor: pointer;
   font: inherit;
+  font-weight: 500;
   padding: 0.25rem 0.75rem;
+
+  &:hover {
+    border-color: var(--color-primario);
+    color: var(--color-primario);
+  }
 }
 
 .context-switcher__option--active {
+  background: var(--color-primario-claro);
+  border-color: var(--color-primario);
+  color: var(--color-primario);
   font-weight: 600;
 }
