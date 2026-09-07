@@ -5,6 +5,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { API_SHARED } from './api-routes';
 import { ActorContext } from './context.model';
 import { ContextService } from './context.service';
+import { environment } from '@shared/environments/environment';
 
 describe('ContextService', () => {
   let service: ContextService;
@@ -81,10 +82,10 @@ describe('ContextService', () => {
     expect(service.active()).toEqual(workshop);
   });
 
-  it('sabe a que ruta lleva cada contexto', () => {
-    expect(service.pathFor(workshop)).toBe('/taller');
-    expect(service.pathFor(client)).toBe('/cliente');
-    expect(service.pathFor({ kind: 'store' })).toBe('/almacen');
+  it('sabe a que direccion lleva cada contexto', () => {
+    expect(service.pathFor(workshop)).toBe(environment.appUrls.workshop);
+    expect(service.pathFor(client)).toBe(environment.appUrls.client);
+    expect(service.pathFor({ kind: 'store' })).toBe(environment.appUrls.store);
   });
 
   it('limpia el contexto al cerrar sesion', () => {
@@ -116,6 +117,20 @@ describe('ContextService', () => {
       service.adopt('workshop');
 
       expect(localStorage.getItem('maintenance.context')).toContain('workshop');
+    });
+  });
+
+  // En desarrollo las tres apps corren en puertos distintos, asi que cambiar de
+  // contexto cruza de origen. Una ruta suelta como '/cliente' se resolveria
+  // contra el origen actual y mandaria al taller a localhost:4201/cliente.
+  describe('pathFor', () => {
+    it('cubre las tres apps', () => {
+      const destinos = (['client', 'workshop', 'store'] as const).map((kind) =>
+        service.pathFor({ kind }),
+      );
+
+      expect(destinos.every((destino) => !!destino)).toBeTrue();
+      expect(new Set(destinos).size).toBe(3);
     });
   });
 });

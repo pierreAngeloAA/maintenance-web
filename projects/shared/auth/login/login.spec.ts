@@ -197,7 +197,7 @@ describe('Login', () => {
       entrar([{ kind: 'client' }]);
 
       expect(navigate).not.toHaveBeenCalled();
-      expect(navigator.go).toHaveBeenCalledWith('/cliente');
+      expect(navigator.go).toHaveBeenCalledWith(environment.appUrls.client);
     });
 
     it('si /me falla no deja a la persona parada en el login', () => {
@@ -214,7 +214,7 @@ describe('Login', () => {
       // Sin contextos no puede adoptar ninguno, asi que sale a su app en vez
       // de quedarse en el login como si no hubiera pasado nada.
       expect(navigate).not.toHaveBeenCalled();
-      expect(navigator.go).toHaveBeenCalledWith('/cliente');
+      expect(navigator.go).toHaveBeenCalledWith(environment.appUrls.client);
     });
   });
 });
