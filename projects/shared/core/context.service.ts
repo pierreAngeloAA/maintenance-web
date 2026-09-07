@@ -3,7 +3,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 
 import { API_SHARED } from './api-routes';
-import { ActorContext, CONTEXT_PATHS, MeResponse } from './context.model';
+import { ActorContext, CONTEXT_PATHS, ContextKind, MeResponse } from './context.model';
 
 const STORAGE_KEY = 'maintenance.context';
 
@@ -51,6 +51,25 @@ export class ContextService {
   select(context: ActorContext): void {
     this.active.set(context);
     safeWrite(context);
+  }
+
+  /**
+   * Deja activo el contexto de la app en la que se esta.
+   *
+   * Devuelve false cuando la persona no tiene ese rol: entro por una puerta que
+   * no le corresponde, y quien llama decide a donde mandarla. No se inventa un
+   * contexto, porque el API lo valida igual y responderia 403.
+   */
+  adopt(kind: ContextKind): boolean {
+    const mine = this.contexts().find((context) => context.kind === kind);
+
+    if (!mine) {
+      return false;
+    }
+
+    this.select(mine);
+
+    return true;
   }
 
   clear(): void {

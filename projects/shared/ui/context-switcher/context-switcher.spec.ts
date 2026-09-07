@@ -6,6 +6,7 @@ import { AppNavigator } from '@shared/core/app-navigator';
 import { ActorContext } from '@shared/core/context.model';
 import { ContextService } from '@shared/core/context.service';
 import { ContextSwitcher } from './context-switcher';
+import { environment } from '@shared/environments/environment';
 
 describe('ContextSwitcher', () => {
   let fixture: ComponentFixture<ContextSwitcher>;
@@ -77,7 +78,7 @@ describe('ContextSwitcher', () => {
     options()[1].click();
 
     expect(context.active()).toEqual(workshop);
-    expect(navigator.go).toHaveBeenCalledWith('/taller');
+    expect(navigator.go).toHaveBeenCalledWith(environment.appUrls.workshop);
   });
 
   it('no navega si ya esta en ese contexto', () => {

@@ -3,11 +3,35 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { API_WORKSHOP } from './api-routes';
-import { Inspection, ObservationInput, Observation, ServiceOffer, ServiceOrder } from './workshop.model';
+import {
+  Inspection,
+  ObservationInput,
+  Observation,
+  ServiceOffer,
+  ServiceOrder,
+  WorkshopMaintenanceRecord,
+  WorkshopVehicle,
+} from './workshop.model';
 
 @Injectable({ providedIn: 'root' })
 export class WorkshopService {
   private readonly http = inject(HttpClient);
+
+  /** Los vehiculos con permiso vigente: los que entraron a este taller. */
+  vehicles(): Observable<WorkshopVehicle[]> {
+    return this.http.get<WorkshopVehicle[]>(`${API_WORKSHOP}/vehicles`);
+  }
+
+  vehicle(vehicleId: number): Observable<WorkshopVehicle> {
+    return this.http.get<WorkshopVehicle>(`${API_WORKSHOP}/vehicles/${vehicleId}`);
+  }
+
+  /** Todo lo que se le ha hecho al vehiculo, lo haya hecho quien lo haya hecho. */
+  history(vehicleId: number): Observable<WorkshopMaintenanceRecord[]> {
+    return this.http.get<WorkshopMaintenanceRecord[]>(
+      `${API_WORKSHOP}/vehicles/${vehicleId}/maintenance_records`,
+    );
+  }
 
   offers(): Observable<ServiceOffer[]> {
     return this.http.get<ServiceOffer[]>(`${API_WORKSHOP}/service_offers`);

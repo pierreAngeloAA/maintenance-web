@@ -1,0 +1,67 @@
+.ficha {
+  display: grid;
+  gap: 0.25rem 1rem;
+  grid-template-columns: auto 1fr;
+  margin: 0 0 1.5rem;
+
+  dt {
+    color: var(--color-texto-suave);
+    font-size: 0.9rem;
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.ficha__placa {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.registros {
+  display: grid;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.registro {
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  padding: 0.75rem 1rem;
+}
+
+.registro__cabeza {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.registro__uso {
+  font-variant-numeric: tabular-nums;
+}
+
+.registro__dato {
+  color: var(--color-texto-suave);
+  font-size: 0.9rem;
+  margin: 0.25rem 0 0;
+}
+
+/* De quien salio el dato: lo que declaro el dueno no vale lo mismo que lo que
+   midio un taller, y el tecnico tiene que poder distinguirlo. */
+.registro__origen {
+  color: var(--color-texto-suave);
+  font-size: 0.8rem;
+  font-style: italic;
+  margin: 0.4rem 0 0;
+}
+
+.estado {
+  color: var(--color-texto-suave);
+}
+
+.estado--error {
+  color: var(--color-peligro);
+}

@@ -1,11 +1,125 @@
-.shell__header,
-.shell__footer {
-  align-items: center;
+/**
+ * Cascaron de la app del taller.
+ *
+ * Pensado para el celular de un tecnico de pie junto al vehiculo: la cabecera
+ * no compite con el contenido y los objetivos tactiles son grandes. Por eso la
+ * navegacion se apila en pantalla angosta en vez de encogerse.
+ */
+/* Igual que en la app del cliente: la app ocupa el alto de la ventana para que
+   el pie quede abajo aunque el contenido sea corto, en vez de flotar en la
+   mitad de la pantalla. */
+:host {
   display: flex;
-  gap: 1rem;
-  padding: 1rem;
+  flex-direction: column;
+  min-height: 100dvh;
 }
 
-.shell__main {
-  padding: 1rem;
+.app-header {
+  background: var(--color-superficie);
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.app-header__bar,
+.app-footer__bar {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin: 0 auto;
+  max-width: 60rem;
+  padding: 0.75rem 1rem;
+  width: 100%;
+}
+
+.app-header__brand {
+  color: inherit;
+  margin-right: auto;
+  text-decoration: none;
+
+  h1 {
+    font-size: 1.25rem;
+    margin: 0;
+  }
+}
+
+/* "Taller" en verde: distingue de un vistazo en cual de las tres apps estas. */
+.app-header__sufijo {
+  color: var(--color-primario);
+
+  &::before {
+    color: var(--color-borde);
+    content: "· ";
+  }
+}
+
+.app-header__tagline {
+  color: var(--color-texto-suave);
+  display: block;
+  font-size: 0.8rem;
+}
+
+/* Navegacion y salir van juntos: son las acciones de moverse por la app. */
+.app-nav {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+
+  a {
+    border-bottom: 2px solid transparent;
+    padding: 0.25rem 0;
+    text-decoration: none;
+  }
+}
+
+.app-nav__salir {
+  padding: 0.4rem 0.9rem;
+}
+
+.app-nav__link--active {
+  border-bottom-color: var(--color-primario);
+  font-weight: 600;
+}
+
+/* La sesion se mantiene junta y pegada a la derecha. Cuando no cabe en una
+   linea baja entera, en vez de quedar centrada bajo la marca. */
+.app-header__sesion {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  margin-left: auto;
+}
+
+.app-header__usuario {
+  color: var(--color-texto-suave);
+  font-size: 0.85rem;
+}
+
+.app-main {
+  flex: 1;
+  margin: 0 auto;
+  max-width: 60rem;
+  padding: 1.5rem 1rem;
+  width: 100%;
+}
+
+.app-footer {
+  border-top: 1px solid var(--color-borde);
+  color: var(--color-texto-suave);
+  font-size: 0.85rem;
+  margin-top: auto;
+}
+
+.app-footer__links {
+  display: flex;
+  gap: 1rem;
+  margin-left: auto;
+}
+
+.app-footer__aviso {
+  margin: 0 auto;
+  max-width: 60rem;
+  padding: 0 1rem 1.25rem;
+  width: 100%;
 }

@@ -93,6 +93,16 @@ export class HealthReportPanel {
     return basis !== 'last_service';
   }
 
+  /**
+   * El API manda la probabilidad cruda (0,991388...). Mostrarla asi no es
+   * transparencia sino ruido: nadie lee un riesgo en notacion decimal de quince
+   * cifras. Mismo formato que el tablero de riesgo, para que el mismo numero se
+   * vea igual en las dos pantallas.
+   */
+  percent(value: number): string {
+    return `${(value * 100).toFixed(1)}%`;
+  }
+
   private daysUntil(date: string | null | undefined): number | null {
     if (!date) {
       return null;
