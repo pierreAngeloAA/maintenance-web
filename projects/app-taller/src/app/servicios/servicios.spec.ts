@@ -108,4 +108,58 @@ describe('Servicios', () => {
 
     expect(text()).toContain('No hay servicios disponibles');
   });
+
+  describe('lenguaje de la interfaz', () => {
+    const order = {
+      id: 3,
+      status: 'assigned',
+      requestId: 1,
+      vehicleId: 9,
+      technicianUserId: 5,
+      startedAt: null,
+      completedAt: null,
+      totalCents: null,
+    };
+
+    it('traduce el estado del trabajo en vez de mostrar el enum del API', () => {
+      render([], [order]);
+
+      expect(text()).toContain('Asignado');
+      expect(text()).not.toContain('assigned');
+    });
+
+    it('traduce todos los estados que el tecnico puede llegar a ver', () => {
+      const esperado: Record<string, string> = {
+        assigned: 'Asignado',
+        en_route: 'En camino',
+        in_progress: 'En proceso',
+        canceled: 'Cancelado',
+      };
+
+      Object.entries(esperado).forEach(([status, etiqueta]) => {
+        expect(fixture.componentInstance.orderStatusLabel(status)).toBe(etiqueta);
+      });
+
+      render();
+    });
+
+    it('no inventa una traduccion para un estado que no conoce', () => {
+      expect(fixture.componentInstance.orderStatusLabel('lo_que_sea')).toBe('lo_que_sea');
+
+      render();
+    });
+
+    it('dice que clase de servicio pidio el cliente, no solo la direccion', () => {
+      render([{ ...offer, request: { ...offer.request, kind: 'monthly_inspection' } }]);
+
+      expect(text()).toContain('Revision mensual');
+    });
+
+    it('traduce tambien una reparacion y una cotizacion', () => {
+      expect(fixture.componentInstance.requestKindLabel('repair')).toBe('Reparacion');
+      expect(fixture.componentInstance.requestKindLabel('quote')).toBe('Cotizacion');
+
+      render();
+    });
+  });
 });
