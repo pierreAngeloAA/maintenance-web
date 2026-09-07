@@ -16,7 +16,11 @@ describe('App (almacen)', () => {
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [
-        { provide: APP_IDENTITY, useValue: { kind: 'store', home: '/catalogo' } },provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+        { provide: APP_IDENTITY, useValue: { kind: 'store', home: '/catalogo' } },
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+      ],
     }).compileComponents();
 
     httpMock = TestBed.inject(HttpTestingController);

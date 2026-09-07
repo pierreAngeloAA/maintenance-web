@@ -16,7 +16,11 @@ describe('App (taller)', () => {
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [
-        { provide: APP_IDENTITY, useValue: { kind: 'workshop', home: '/servicios' } },provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+        { provide: APP_IDENTITY, useValue: { kind: 'workshop', home: '/servicios' } },
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+      ],
     }).compileComponents();
 
     httpMock = TestBed.inject(HttpTestingController);
@@ -79,5 +83,68 @@ describe('App (taller)', () => {
     httpMock.expectOne(`${API_SHARED}/me`).flush('', { status: 500, statusText: 'Server Error' });
 
     expect(fixture.nativeElement.querySelector('h1')).not.toBeNull();
+  });
+
+  describe('navegacion', () => {
+    it('lleva a los servicios, que es la casa del taller', () => {
+      logIn();
+      const fixture = render();
+      httpMock.expectOne(`${API_SHARED}/me`).flush({
+        user: { id: 1, email: 'tecnico@taller.co', name: 'Andres', createdAt: '' },
+        contexts: [{ kind: 'workshop', organizationId: 1, name: 'Taller La 80' }],
+        activeContext: { kind: 'workshop', organizationId: 1 },
+      });
+      fixture.detectChanges();
+
+      const enlace = fixture.nativeElement.querySelector('a[href="/servicios"]');
+
+      expect(enlace).not.toBeNull();
+      expect(enlace.textContent).toContain('Servicios');
+    });
+
+    it('no muestra la navegacion a quien no ha entrado', () => {
+      const fixture = render();
+
+      expect(fixture.nativeElement.querySelector('.app-nav')).toBeNull();
+    });
+
+    it('dice quien esta trabajando: el tecnico tiene que poder verificarlo', () => {
+      logIn();
+      const fixture = render();
+      httpMock.expectOne(`${API_SHARED}/me`).flush({
+        user: { id: 1, email: 'tecnico@taller.co', name: 'Andres', createdAt: '' },
+        contexts: [{ kind: 'workshop', organizationId: 1, name: 'Taller La 80' }],
+        activeContext: { kind: 'workshop', organizationId: 1 },
+      });
+      fixture.detectChanges();
+
+      // El correo sale de la sesion, no de /me: es el dato que la persona uso
+      // para entrar, y es lo que le permite verificar con que cuenta trabaja.
+      expect(fixture.nativeElement.querySelector('.app-header__usuario').textContent)
+        .toContain('a@b.co');
+    });
+  });
+
+  describe('pie de pagina', () => {
+    it('enlaza el codigo de los dos repos: el proyecto es abierto', () => {
+      const fixture = render();
+      const enlaces = fixture.nativeElement.querySelectorAll('.app-footer__links a');
+
+      expect(enlaces.length).toBe(2);
+    });
+
+    it('muestra el ano en curso', () => {
+      const fixture = render();
+
+      expect(fixture.nativeElement.querySelector('.app-footer').textContent)
+        .toContain(String(new Date().getFullYear()));
+    });
+
+    it('recuerda que lo que se mide queda en el historial del cliente', () => {
+      const fixture = render();
+
+      expect(fixture.nativeElement.querySelector('.app-footer__aviso').textContent)
+        .toContain('historial');
+    });
   });
 });
