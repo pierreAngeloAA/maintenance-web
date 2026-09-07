@@ -1,0 +1,34 @@
+<h2>Vehiculos en el taller</h2>
+
+@if (loading()) {
+  <p class="estado">Cargando vehiculos…</p>
+} @else if (error()) {
+  <p class="estado estado--error">
+    No pudimos cargar los vehiculos.
+    <button type="button" (click)="load()">Reintentar</button>
+  </p>
+} @else if (vehicles().length === 0) {
+  <p class="estado">
+    Todavia no ha entrado ningun vehiculo. Aparecen aca cuando tomas un servicio: el permiso
+    sobre el vehiculo lo da el dueno y dura lo que dura el trabajo.
+  </p>
+} @else {
+  <ul class="vehiculos">
+    @for (vehicle of vehicles(); track vehicle.id) {
+      <li class="vehiculo">
+        <a class="vehiculo__enlace" [routerLink]="['/vehiculos', vehicle.id]">
+          <span class="vehiculo__nombre">{{ label(vehicle) }}</span>
+          <span class="vehiculo__datos">
+            @if (vehicle.plate) {
+              <span class="vehiculo__placa">{{ vehicle.plate }}</span>
+            }
+            <span>{{ vehicle.usageValue }} {{ vehicle.usageUnit }}</span>
+            @if (vehicle.city) {
+              <span>{{ vehicle.city }}</span>
+            }
+          </span>
+        </a>
+      </li>
+    }
+  </ul>
+}

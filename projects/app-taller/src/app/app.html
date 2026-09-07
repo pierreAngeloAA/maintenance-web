@@ -8,12 +8,13 @@
     @if (isLoggedIn()) {
       <nav class="app-nav" aria-label="Navegacion principal">
         <a routerLink="/servicios" routerLinkActive="app-nav__link--active">Servicios</a>
+        <a routerLink="/vehiculos" routerLinkActive="app-nav__link--active">Vehiculos</a>
+        <button type="button" class="app-nav__salir" (click)="logout()">Cerrar sesion</button>
       </nav>
 
       <div class="app-header__sesion">
         <app-context-switcher />
         <span class="app-header__usuario">{{ user()?.email }}</span>
-        <button type="button" class="app-header__salir" (click)="logout()">Cerrar sesion</button>
       </div>
     }
   </div>

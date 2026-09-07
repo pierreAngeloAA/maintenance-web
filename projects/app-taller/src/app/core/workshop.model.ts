@@ -93,3 +93,47 @@ export const PHASE_LABELS: Record<InspectionPhase, string> = {
 };
 
 export const PHASE_ORDER: InspectionPhase[] = ['engine_off', 'engine_idle', 'driving'];
+
+/**
+ * Un vehiculo que entro al taller. Solo aparecen los que tienen un permiso
+ * vigente del dueno: el taller no ve el garaje de nadie mas.
+ */
+export interface WorkshopVehicle {
+  id: number;
+  vehicleType: string;
+  make: string;
+  model: string;
+  modelYear: number;
+  vin: string | null;
+  plate: string | null;
+  /** Decimal como string, para no perder precision. */
+  usageValue: string;
+  usageUnit: string;
+  city: string | null;
+  /** Vencimientos del RUNT. Nulos mientras no se haya consultado la placa. */
+  soatExpiresOn: string | null;
+  technicalInspectionExpiresOn: string | null;
+  runtCheckedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Quien registro el mantenimiento: el dueno o un taller. */
+export interface RecordSource {
+  source: string;
+  userName: string | null;
+  organizationName: string | null;
+}
+
+export interface WorkshopMaintenanceRecord {
+  id: number;
+  vehicleId: number;
+  partType: { id: number; code: string; name: string; category: string };
+  performedOn: string;
+  usageAtService: string;
+  partBrand: string | null;
+  costCents: number | null;
+  currency: string;
+  notes: string | null;
+  recordedBy: RecordSource;
+}
