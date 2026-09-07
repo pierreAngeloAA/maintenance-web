@@ -1,3 +1,5 @@
+import { environment } from '@shared/environments/environment';
+
 /**
  * Un contexto es "en nombre de quien actuas". El de cliente lo tiene todo el
  * mundo y no depende de ninguna membresia: cualquiera puede registrar su
@@ -18,9 +20,12 @@ export interface MeResponse {
   activeContext: ActorContext;
 }
 
-/** Donde vive cada app dentro del mismo dominio. */
-export const CONTEXT_PATHS: Record<ContextKind, string> = {
-  client: '/cliente',
-  workshop: '/taller',
-  store: '/almacen',
-};
+/**
+ * Donde vive cada app.
+ *
+ * Sale del entorno y no de una constante fija porque en desarrollo las tres
+ * corren en puertos distintos: una ruta suelta como `/cliente` se resolveria
+ * contra el origen actual y mandaria al taller a `localhost:4201/cliente`, que
+ * no existe. En produccion las tres salen del mismo dominio y el prefijo basta.
+ */
+export const CONTEXT_PATHS: Record<ContextKind, string> = environment.appUrls;
