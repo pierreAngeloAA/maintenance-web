@@ -1,13 +1,48 @@
-<header class="shell__header">
-  <h1>Maintenance · Taller</h1>
-  @if (isLoggedIn()) {
-    <app-context-switcher />
-    <button type="button" (click)="logout()">Cerrar sesion</button>
-  }
+<header class="app-header">
+  <div class="app-header__bar">
+    <a class="app-header__brand" routerLink="/servicios">
+      <h1>Maintenance <span class="app-header__sufijo">Taller</span></h1>
+      <span class="app-header__tagline">Servicios y revisiones de 30 minutos</span>
+    </a>
+
+    @if (isLoggedIn()) {
+      <nav class="app-nav" aria-label="Navegacion principal">
+        <a routerLink="/servicios" routerLinkActive="app-nav__link--active">Servicios</a>
+        <a routerLink="/vehiculos" routerLinkActive="app-nav__link--active">Vehiculos</a>
+        <button type="button" class="app-nav__salir" (click)="logout()">Cerrar sesion</button>
+      </nav>
+
+      <div class="app-header__sesion">
+        <app-context-switcher />
+        <span class="app-header__usuario">{{ user()?.email }}</span>
+      </div>
+    }
+  </div>
 </header>
 
-<main class="shell__main">
+<main class="app-main">
   <router-outlet />
 </main>
 
-<footer class="shell__footer">Maintenance · {{ year }}</footer>
+<footer class="app-footer">
+  <div class="app-footer__bar">
+    <div>
+      <strong>Maintenance</strong>
+      <span>· Taller · {{ year }}</span>
+    </div>
+
+    <nav class="app-footer__links">
+      <a href="https://github.com/pierreAngeloAA/maintenance-api" target="_blank" rel="noopener">
+        Codigo del API
+      </a>
+      <a href="https://github.com/pierreAngeloAA/maintenance-web" target="_blank" rel="noopener">
+        Codigo de la interfaz
+      </a>
+    </nav>
+  </div>
+
+  <p class="app-footer__aviso">
+    Lo que midas queda en el historial del vehiculo y el cliente lo ve. De ahi sale la prediccion
+    que recibe cada mes: una medicion apurada hoy es un diagnostico equivocado despues.
+  </p>
+</footer>

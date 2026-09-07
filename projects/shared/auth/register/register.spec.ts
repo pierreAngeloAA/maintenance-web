@@ -5,6 +5,8 @@ import { Router, provideRouter } from '@angular/router';
 
 import { Register } from './register';
 import { environment } from '@shared/environments/environment';
+import { APP_IDENTITY } from '@shared/core/app-identity';
+import { AppNavigator } from '@shared/core/app-navigator';
 
 describe('Register', () => {
   let fixture: ComponentFixture<Register>;
@@ -17,13 +19,19 @@ describe('Register', () => {
     localStorage.clear();
     await TestBed.configureTestingModule({
       imports: [Register],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: APP_IDENTITY, useValue: { kind: 'client', home: '/vehicles' } },
+        { provide: AppNavigator, useValue: jasmine.createSpyObj('AppNavigator', ['go']) },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Register);
     component = fixture.componentInstance;
     httpMock = TestBed.inject(HttpTestingController);
-    navigate = spyOn(TestBed.inject(Router), 'navigate');
+    navigate = spyOn(TestBed.inject(Router), 'navigateByUrl');
     fixture.detectChanges();
   });
 
@@ -53,7 +61,13 @@ describe('Register', () => {
       { status: 201, statusText: 'Created' },
     );
 
-    expect(navigate).toHaveBeenCalledWith(['/vehicles']);
+    httpMock.expectOne(`${environment.apiUrl}/api/v1/me`).flush({
+      user: { id: 1, email: 'pierre@example.com', name: 'Pierre', createdAt: '' },
+      contexts: [{ kind: 'client' }],
+      activeContext: { kind: 'client' },
+    });
+
+    expect(navigate).toHaveBeenCalledWith('/vehicles');
   });
 
   it('muestra los errores por campo que devuelve el API', () => {

@@ -1,0 +1,80 @@
+<a routerLink="/vehiculos">Volver a los vehiculos</a>
+
+@if (loading()) {
+  <p class="estado">Cargando el vehiculo…</p>
+} @else if (error()) {
+  <p class="estado estado--error">No pudimos cargar este vehiculo.</p>
+} @else if (vehicle(); as vehiculo) {
+  <h2>{{ label(vehiculo) }}</h2>
+
+  <dl class="ficha">
+    @if (vehiculo.plate) {
+      <dt>Placa</dt>
+      <dd class="ficha__placa">{{ vehiculo.plate }}</dd>
+    }
+
+    <dt>Uso</dt>
+    <dd>{{ vehiculo.usageValue }} {{ vehiculo.usageUnit }}</dd>
+
+    @if (vehiculo.city) {
+      <dt>Ciudad</dt>
+      <dd>{{ vehiculo.city }}</dd>
+    }
+
+    <dt>SOAT</dt>
+    <dd>
+      @if (vehiculo.soatExpiresOn) {
+        Vence el {{ vehiculo.soatExpiresOn }}
+      } @else {
+        Sin dato del RUNT
+      }
+    </dd>
+
+    <dt>Tecnomecanica</dt>
+    <dd>
+      @if (vehiculo.technicalInspectionExpiresOn) {
+        Vence el {{ vehiculo.technicalInspectionExpiresOn }}
+      } @else {
+        Sin dato del RUNT
+      }
+    </dd>
+  </dl>
+
+  <h3>Historial</h3>
+
+  @if (historyFailed()) {
+    <p class="estado estado--error">No pudimos cargar el historial de este vehiculo.</p>
+  } @else if (records().length === 0) {
+    <p class="estado">
+      No hay mantenimientos registrados. No significa que este al dia: significa que no sabemos
+      que se le ha hecho.
+    </p>
+  } @else {
+    <ul class="registros">
+      @for (registro of records(); track registro.id) {
+        <li class="registro">
+          <div class="registro__cabeza">
+            <strong>{{ registro.partType.name }}</strong>
+            <span class="registro__uso">{{ registro.usageAtService }} {{ vehiculo.usageUnit }}</span>
+          </div>
+
+          <p class="registro__dato">
+            {{ registro.performedOn }}
+            @if (registro.partBrand) {
+              · {{ registro.partBrand }}
+            }
+            @if (cost(registro); as valor) {
+              · {{ valor }}
+            }
+          </p>
+
+          @if (registro.notes) {
+            <p class="registro__dato">{{ registro.notes }}</p>
+          }
+
+          <p class="registro__origen">{{ sourceLabel(registro.recordedBy) }}</p>
+        </li>
+      }
+    </ul>
+  }
+}

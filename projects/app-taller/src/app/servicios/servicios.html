@@ -14,7 +14,7 @@
       @for (order of orders(); track order.id) {
         <article class="tarjeta">
           <p class="tarjeta__titulo">Servicio #{{ order.id }}</p>
-          <p class="tarjeta__dato">{{ order.status }}</p>
+          <p class="tarjeta__dato">{{ orderStatusLabel(order.status) }}</p>
           <button type="button" class="boton boton--principal" (click)="openOrder(order)">
             Continuar
           </button>
@@ -31,6 +31,7 @@
       @for (offer of offers(); track offer.id) {
         <article class="tarjeta">
           <p class="tarjeta__titulo">{{ vehicleLabel(offer) }}</p>
+          <p class="tarjeta__dato">{{ requestKindLabel(offer.request.kind) }}</p>
           @if (offer.request.address) {
             <p class="tarjeta__dato">{{ offer.request.address }}</p>
           }
