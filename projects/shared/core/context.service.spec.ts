@@ -95,4 +95,27 @@ describe('ContextService', () => {
     expect(service.active()).toBeNull();
     expect(service.organizationId()).toBeNull();
   });
+
+  describe('adopt', () => {
+    it('activa el contexto de la app cuando la persona lo tiene', () => {
+      service.contexts.set([{ kind: 'client' }, workshop]);
+
+      expect(service.adopt('workshop')).toBeTrue();
+      expect(service.active()).toEqual(workshop);
+    });
+
+    it('no activa nada cuando la persona no tiene ese rol', () => {
+      service.contexts.set([{ kind: 'client' }]);
+
+      expect(service.adopt('workshop')).toBeFalse();
+      expect(service.active()).toBeNull();
+    });
+
+    it('deja el contexto guardado para que sobreviva a la recarga', () => {
+      service.contexts.set([workshop]);
+      service.adopt('workshop');
+
+      expect(localStorage.getItem('maintenance.context')).toContain('workshop');
+    });
+  });
 });
