@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 
 import { API_SHARED } from '@shared/core/api-routes';
 import { AuthService } from '@shared/core/auth.service';
+import { APP_IDENTITY } from '@shared/core/app-identity';
 import { App } from './app';
 
 describe('App (taller)', () => {
@@ -14,7 +15,8 @@ describe('App (taller)', () => {
     localStorage.clear();
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [
+        { provide: APP_IDENTITY, useValue: { kind: 'workshop', home: '/servicios' } },provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     }).compileComponents();
 
     httpMock = TestBed.inject(HttpTestingController);
