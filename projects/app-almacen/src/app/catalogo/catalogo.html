@@ -1,31 +1,60 @@
-<h2>Catalogo</h2>
+<div class="barra">
+  <h2>Catalogo</h2>
+  <button type="button" class="barra__alta" (click)="openForm()">Agregar producto</button>
+</div>
 
-<section class="alta">
-  <h3>Agregar producto</h3>
-  <div class="alta__campos">
-    <input #nombre placeholder="Nombre" aria-label="Nombre" />
-    <input #marca placeholder="Marca" aria-label="Marca" />
-    <input #sku placeholder="SKU (opcional)" aria-label="SKU" />
-    <input #precio type="number" inputmode="decimal" placeholder="Precio" aria-label="Precio" />
-    <input #stock type="number" inputmode="numeric" placeholder="Stock" aria-label="Stock" />
-    <select #pieza aria-label="Tipo de pieza">
-      <option value="">Sin pieza asociada</option>
-      @for (tipo of partTypes(); track tipo.id) {
-        <option [value]="tipo.id">{{ tipo.name }}</option>
-      }
-    </select>
-    <button
-      type="button"
-      [disabled]="creating()"
-      (click)="create({ name: nombre.value, brand: marca.value, sku: sku.value, price: precio.value, stock: stock.value, partTypeId: pieza.value })"
-    >
-      Agregar
-    </button>
-  </div>
-  @for (mensaje of formErrors(); track mensaje) {
-    <p class="estado estado--error">{{ mensaje }}</p>
+<dialog #dialogo class="modal" aria-labelledby="titulo-alta" (close)="closeForm()">
+  @if (formOpen()) {
+    <h3 id="titulo-alta" class="modal__titulo">Agregar producto</h3>
+
+    <div class="modal__campos">
+      <label>
+        Nombre
+        <input #nombre aria-label="Nombre" />
+      </label>
+      <label>
+        Marca
+        <input #marca aria-label="Marca" />
+      </label>
+      <label>
+        SKU (opcional)
+        <input #sku aria-label="SKU" />
+      </label>
+      <label>
+        Tipo de pieza
+        <select #pieza aria-label="Tipo de pieza">
+          <option value="">Sin pieza asociada</option>
+          @for (tipo of partTypes(); track tipo.id) {
+            <option [value]="tipo.id">{{ tipo.name }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        Precio
+        <input #precio type="number" inputmode="decimal" aria-label="Precio" />
+      </label>
+      <label>
+        Stock
+        <input #stock type="number" inputmode="numeric" aria-label="Stock" />
+      </label>
+    </div>
+
+    @for (mensaje of formErrors(); track mensaje) {
+      <p class="estado estado--error">{{ mensaje }}</p>
+    }
+
+    <div class="modal__acciones">
+      <button type="button" (click)="closeForm()">Cancelar</button>
+      <button
+        type="button"
+        [disabled]="creating()"
+        (click)="create({ name: nombre.value, brand: marca.value, sku: sku.value, price: precio.value, stock: stock.value, partTypeId: pieza.value })"
+      >
+        Guardar
+      </button>
+    </div>
   }
-</section>
+</dialog>
 
 @if (loading()) {
   <p class="estado">Cargando el catalogo…</p>
@@ -36,7 +65,7 @@
   </p>
 } @else if (products().length === 0) {
   <p class="estado">
-    Todavia no tienes productos. Agrega el primero con el formulario de arriba; despues podras
+    Todavia no tienes productos. Agrega el primero con el boton de arriba; despues podras
     declarar para que vehiculos sirve cada uno.
   </p>
 } @else {
